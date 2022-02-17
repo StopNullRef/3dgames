@@ -5,7 +5,7 @@ using UnityEngine;
 
 using Project.Util;
 
-public class ObjectPool<T>  where T: MonoBehaviour, IPoolableObject
+public class ObjectPool<T> where T : MonoBehaviour, IPoolableObject
 {
     public List<T> Pool { get; private set; } = new List<T>();
 
@@ -22,7 +22,7 @@ public class ObjectPool<T>  where T: MonoBehaviour, IPoolableObject
         obj.CanRecycle = false;
         Pool.Add(obj);
     }
-    
+
     /// <summary>
     /// 객체를 다시 풀에 담는 함수
     /// </summary>
@@ -33,10 +33,17 @@ public class ObjectPool<T>  where T: MonoBehaviour, IPoolableObject
         obj.gameObject.SetActive(false);
     }
 
-    // TODO 12/29 여기서 부터 만들기
+    // TODO 2/17 여기서 부터 만들기
     // 오브젝트 풀링 다시 고치기!!
-    //public T GetObject(Func<T,bool> prev = null)
+    //public T GetObject()
     //{
+    //    // 풀에서 재사용이 가능한 객체를 찾는다
+    //    if (!Pool.Find(obj => obj.CanRecycle == true))
+    //        return null;
+    //    else
+    //    {
+    //
+    //    }
     //
     //}
 

@@ -1,3 +1,5 @@
+using Project.Util;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +10,7 @@ public class PoolManager : Singleton<PoolManager>
     public Transform map;
     GameObject poolHolder;
 
-    public Dictionary<string, object> poolDict = new Dictionary<string, object>();
+    public Dictionary<Type, object> poolDict = new Dictionary<Type, object>();
 
     /// <summary>
     /// 다시 활성화 시켜주기 위해
@@ -35,12 +37,12 @@ public class PoolManager : Singleton<PoolManager>
 
     public void FixedUpdate()
     {
-        if (SceneManager.Instance.sceneName == Define.Scene.LoadingScene || (poolList.Count ==0))
+        if (SceneManager.Instance.sceneName == Define.Scene.LoadingScene || (poolList.Count == 0))
             return;
 
         poolTime += Time.deltaTime;
 
-        if(poolTime > respawnTime)
+        if (poolTime > respawnTime)
         {
             PoolListRemove();
             poolTime = 0;
@@ -84,7 +86,7 @@ public class PoolManager : Singleton<PoolManager>
 
     public void PoolListRemove()
     {
-        foreach(GameObject go in poolList)
+        foreach (GameObject go in poolList)
         {
             if (go == null)
             {
@@ -94,6 +96,46 @@ public class PoolManager : Singleton<PoolManager>
             go.SetActive(true);
         }
         poolList.Clear();
+    }
+
+    /// <summary>
+    /// 오브젝트 풀 매니저에 딕셔너리에 등록하는 함수
+    /// </summary>
+    /// <typeparam name="T">넣을 오브젝트 타입</typeparam>
+    /// <param name="obj">넣을 오브젝트</param>
+    /// <param name="count">넣을 횟수</param>
+    public void PoolDictRigist<T>(T obj, int count) where T : MonoBehaviour, IPoolableObject
+    {
+        ObjectPool<T> pool = null;
+        var key = typeof(T);
+
+        // 풀딕트에서 해당 타입의 키가존재하는지 체크
+        if (poolDict.ContainsKey(key))
+            // 존재한다면 풀딕트에서 가져와 캐스팅해서 넣어준다
+            pool = poolDict[key] as ObjectPool<T>;
+        else
+        {
+            // 존재하지 않는다면 생성해서 추가
+            pool = new ObjectPool<T>();
+            poolDict.Add(key, pool);
+        }
+
+        // 풀홀더가 null이라면 생성해서 넣어준다
+        if(pool.poolHolder == null)
+        {
+            pool.poolHolder = new GameObject { name = $"{key}Holder" }.transform;
+            pool.poolHolder.parent = transform;
+            pool.poolHolder.position = Vector3.zero;
+        }
+
+        // 매개 변수로 받은 count 만큼 생성후 풀에 등록
+        for(int i=0; i< count; i++)
+        {
+            var poolObj = Instantiate(obj);
+            poolObj.name = obj.name;
+
+            pool.RegistPool(poolObj);
+        }
     }
 
 }
