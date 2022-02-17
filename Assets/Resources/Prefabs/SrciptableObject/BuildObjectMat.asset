@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e97f78e15d67f74e8702fa484500a77, type: 3}
+  m_Name: BuildObjectMat
+  m_EditorClassIdentifier: 
+  red: {fileID: 2100000, guid: fe0a5325f513b2944825bbbca339704f, type: 2}
+  green: {fileID: 2100000, guid: 424d748a2689f6b45a362e471deaf387, type: 2}
+  colcheckBoxMesh: {fileID: 4300000, guid: e09925cc591aca14689359045612c893, type: 2}
