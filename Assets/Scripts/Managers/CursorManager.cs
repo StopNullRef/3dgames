@@ -65,15 +65,14 @@ public class CursorManager : Singleton<CursorManager>
     public void ChangeCursor()
     {
         RaycastHit hit;
-
         // 현재 마우스 위치에 UI가 있다면 커서를 바꿔주지않음
-        if((EventSystem.current.IsPointerOverGameObject() == true) || (!canCusorChange))
+        if ((EventSystem.current.IsPointerOverGameObject() == true))
         {
             SetBasicCursor();
             return;
         }
 
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000f))
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000f,1<<LayerMask.NameToLayer("Obj")))
         {
             switch (hit.transform.tag)
             {
@@ -86,11 +85,6 @@ public class CursorManager : Singleton<CursorManager>
             }
 
         }
-        else
-        {
-            SetBasicCursor();
-        }
-
     }
 
 

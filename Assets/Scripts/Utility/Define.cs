@@ -53,6 +53,13 @@ namespace Define
         #endregion
     }
 
+    public class StaticDataPath
+    {
+        public const string SDPath = "Assets/StaticData";
+        public const string SDJson = "Assets/StaticData/Json";
+        public const string SDExcel = "Assets/StaticData/Excel";
+    }
+
     /// <summary>
     /// GameObject에 사용할 Layer 번호들을 담고 있는 클래스
     /// </summary>

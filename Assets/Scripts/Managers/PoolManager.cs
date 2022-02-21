@@ -31,7 +31,6 @@ public class PoolManager : Singleton<PoolManager>
 
     private void Start()
     {
-        // TODO 씬 로드 될때 들어가는 함수들 순서 정해줘야 될듯
         Init();
     }
 
