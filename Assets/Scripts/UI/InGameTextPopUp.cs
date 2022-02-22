@@ -1,3 +1,4 @@
+using Project.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +12,7 @@ public class InGameTextPopUp : MonoBehaviour
 
     float time;
 
-    private void Start()
+    public void Start()
     {
         uiColor = middleButtom.color;
     }
@@ -22,7 +23,7 @@ public class InGameTextPopUp : MonoBehaviour
 
         if (time > 3)
         {
-            uiColor.a = Mathf.Lerp(uiColor.a, 0, Time.deltaTime *2f);
+            uiColor.a = Mathf.Lerp(uiColor.a, 0, Time.deltaTime * 2f);
             middleButtom.color = uiColor;
         }
     }

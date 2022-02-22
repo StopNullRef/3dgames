@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using Project.UI;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -18,7 +19,21 @@ public class UIManager : Singleton<UIManager>
 
     public InvenPopUp invenPopUp; // 인벤토리 팝업 UI
 
-    private const string buildingCanvas = "BuildingCanvas";
+    /// <summary>
+    /// 현재 열려 있는 모든 UI들을 담을 리스트
+    /// </summary>
+    private List<UIBase> totalOpenUIList = new List<UIBase>();
+
+    /// <summary>
+    /// 모든 UI들을 담을 리스트
+    /// </summary>
+    private List<UIBase> totalUIList = new List<UIBase>();
+
+    /// <summary>
+    /// 모든 ui를 담을 딕셔너리
+    /// </summary>
+    private Dictionary<string, UIBase> totalUIDict = new Dictionary<string, UIBase>();
+
 
     /// <summary>
     /// 하이에라키에 있는 캔버스들을 담을 배열
@@ -39,6 +54,8 @@ public class UIManager : Singleton<UIManager>
     {
         InvenOnOff();
     }
+    // TODO 2/22 CanvasGroup을 이용해서 하도록 바꿀예정
+
 
     // public으로 열어서 에디터 창에서 넣어주게 될때
     // 씬이 바뀌면 missing 이 뜨게 됨으로 일일이 넣어줘야 될듯하다. 
@@ -93,26 +110,117 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     public void CameraStateToSetCanvas(Define.CameraState cameraState)
     {
+        // 처음에 모든 ui를 꺼준다
+        foreach(var ui in totalUIList)
+        {
+            ui.Close();
+        }
+
         switch (cameraState)
         {
             case Define.CameraState.Build:
-                foreach (var canvas in canvasArr)
-                {
-                    if (canvas.GetComponent<CanvasType>().type == Define.CanvasType.Building)
-                        canvas.gameObject.SetActive(true);
-                    else
-                        canvas.gameObject.SetActive(false);
-                }
+                List<UIBase> buildUI = totalUIList.Where(_ => _.type == Define.UIType.Building).ToList();
+                foreach (var ui in buildUI)
+                    ui.Open();
                 break;
             case Define.CameraState.None:
-                foreach (var canvas in canvasArr)
-                {
-                    if (canvas.GetComponent<CanvasType>().type == Define.CanvasType.Building)
-                        canvas.gameObject.SetActive(false);
-                    else
-                        canvas.gameObject.SetActive(true);
-                }
+                List<UIBase> noneUI = totalUIList.Where(_ => _.type == Define.UIType.None).ToList();
+                foreach (var ui in noneUI)
+                    ui.Open();
                 break;
         }
+    }
+
+    /// <summary>
+    /// UIManager에 등록하는 함수
+    /// </summary>
+    public void RegistUI(UIBase ui)
+    {
+        var key = ui.GetType().Name;
+
+        bool hasKey = false;
+
+        // 딕셔너리와 리스트에 등록되어있다면
+        if (totalUIDict.ContainsKey(key) || totalUIList.Contains(ui))
+        {
+            // 등록이 되어있는데 널이아니라면 이미 등록 되어 있다는 것 임으로
+            // 등록을 시킬필요가없으므로 리턴
+            if (totalUIDict[key] != null)
+                return;
+            else
+            {
+                hasKey = true;
+
+                for (int i = 0; i < totalUIList.Count; i++)
+                {
+                    if (totalUIList[i] == null)
+                    {
+                        totalUIList.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
+        }
+
+        totalUIList.Add(ui);
+
+        if (hasKey)
+            totalUIDict[key] = ui;
+        else
+        {
+            totalUIDict.Add(key, ui);
+        }
+
+    }
+
+    /// <summary>
+    /// 열려있는 UI리스트 등록해주는 함수
+    /// </summary>
+    /// <param name="ui"></param>
+    public void RegistOpenUI(UIBase ui)
+    {
+        if (ui.isOpen)
+            totalOpenUIList.Add(ui);
+    }
+
+    /// <summary>
+    /// 열려있는 UI리스트에 지워주는 함수
+    /// </summary>
+    public void RemoveOpenUI(UIBase ui)
+    {
+        if (totalOpenUIList.Contains(ui))
+            totalOpenUIList.Remove(ui);
+    }
+
+    public T GetUI<T>() where T : UIBase
+    {
+        T result = null;
+        var typeName = typeof(T).Name;
+
+        if(totalUIDict.ContainsKey(typeName))
+        {
+            result = totalUIDict[typeName] as T;
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 열려있는 UI창중 제일 위에있는 UI를 반환하는 함수
+    /// </summary>
+    /// <returns></returns>
+    public UIBase GetTopOpenUI()
+    {
+        UIBase result = null;
+
+        for(int i = totalOpenUIList.Count-1; i<=0; i--)
+        {
+            if(totalOpenUIList != null)
+            {
+                result = totalOpenUIList[i];
+            }
+        }
+
+        return result;
     }
 }

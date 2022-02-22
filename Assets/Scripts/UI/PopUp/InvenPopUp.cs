@@ -8,7 +8,7 @@ public class InvenPopUp : UIPopUpBase
     InventoryHandler inven;
 
 
-    protected override void Start()
+    public override void Start()
     {
         base.Start();
         Initialize();

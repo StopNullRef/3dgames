@@ -186,4 +186,13 @@ namespace Define
         Ingame,
     }
 
+    /// <summary>
+    /// UI≈∏¿‘
+    /// </summary>
+    public enum UIType
+    {
+        None,
+        Building,
+    }
+
 }

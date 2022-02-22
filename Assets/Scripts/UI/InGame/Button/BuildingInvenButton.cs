@@ -1,9 +1,10 @@
+using Project.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BuildingInvenButton : MonoBehaviour
+public class BuildingInvenButton : UIBase
 {
     /// <summary>
     /// 건축 시스템에 사용 하는 인벤토리

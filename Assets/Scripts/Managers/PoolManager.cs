@@ -23,6 +23,8 @@ public class PoolManager : Singleton<PoolManager>
     /// </summary>
     const float respawnTime = 10f;
 
+    //TODO 02/22 respone은 풀매니저에서 말고 매니저 따로만들어서 관리하기
+
     protected override void Awake()
     {
         base.Awake();

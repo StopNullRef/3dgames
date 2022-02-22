@@ -1,9 +1,10 @@
+using Project.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIPopUpBase : MonoBehaviour
+public class UIPopUpBase : UIBase
 {
     protected Transform okay;
     protected Transform cancel;
@@ -16,9 +17,9 @@ public class UIPopUpBase : MonoBehaviour
     public Text description;
 
 
-    protected virtual void Start()
+    public override void Start()
     {
-
+        base.Start();
     }
 
     protected virtual void Initialize()
