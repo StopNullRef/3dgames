@@ -1,9 +1,10 @@
+using Project.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UIMover : MonoBehaviour, IDragHandler,IBeginDragHandler
+public class UIMover : UIBase, IDragHandler, IBeginDragHandler
 {
     Vector2 distance; // 마우스 클릭된 위치랑 인벤토리 middleTop 부분과의 거리
 
@@ -15,10 +16,24 @@ public class UIMover : MonoBehaviour, IDragHandler,IBeginDragHandler
 
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
+        //isUpate = true;
+        //isOpen = false;
+        base.Start();
         holder = transform.parent.gameObject;
         originPos = holder.transform.position;
+    }
+
+    public override void OnUpate()
+    {
+        if(Input.GetKeyDown(KeyCode.I))
+        {
+            if (isOpen)
+                Close();
+            else
+                Open();
+        }
     }
 
 

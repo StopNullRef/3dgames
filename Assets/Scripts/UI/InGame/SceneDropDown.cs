@@ -58,13 +58,13 @@ public class SceneDropDown : UIBase, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         // 해당 드랍다운에 마우스가 들어오면 커서 기본 커서로 나오게끔
-        CursorManager.Instance.canCusorChange = true;
+        IngameManager.Instance.canCusorChange = true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         // 나갔으면 나갔다고 체크
         ((IPointerExitHandler)dropdown).OnPointerExit(eventData);
-        CursorManager.Instance.canCusorChange = false;
+        IngameManager.Instance.canCusorChange = false;
     }
 }

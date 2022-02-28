@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Project.UI;
 
-public class InventoryHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     /// <summary>
     /// 처음 드래그 될때 마우스위치에 넣어줄 이미지
@@ -41,16 +42,22 @@ public class InventoryHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     /// </summary>
     RectTransform invenRect;
 
+    UIMover mover;
+
     public void Awake()
     {
         SlotInitialize();
     }
 
-    public void Start()
+    public override void Start()
     {
+        base.isUpate = true;
+        base.isOpen = false;
+        base.Start();
         originTempSlotPos = tempSlotImage.transform.localPosition;
         tempItemSlot = tempSlotImage.GetComponent<ItemSlot>();
         invenRect = transform.GetComponent<RectTransform>();
+        mover = transform.parent.GetComponentInChildren<UIMover>();
     }
 
     /// <summary>
@@ -264,6 +271,52 @@ public class InventoryHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         }
         return itemMaxCount;
     }
+
+
+    //Today invenmove를 받아서 온오프 같이해주는거구현
+ 
+    public override void Open(bool initialValue = false)
+    {
+        base.Open(initialValue);
+
+        if (mover == null)
+            mover = transform.parent.GetComponentInChildren<UIMover>();
+
+        mover.Open();
+    }
+
+    public override void Close(bool intialValue = false)
+    {
+        base.Close(intialValue);
+
+        if (mover == null)
+            mover = transform.parent.GetComponentInChildren<UIMover>();
+
+        mover.Close();
+    }
+
+    /// <summary>
+    /// 매니저에서 돌릴 업데이트 문
+    /// </summary>
+    public override void OnUpate()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            InvenOnOff();
+        }
+    }
+
+    /// <summary>
+    /// 인벤토리 껏다키는 함수
+    /// </summary>
+    private void InvenOnOff()
+    {
+        if (isOpen)
+            Close();
+        else
+            Open();
+    }
+
 
     /// <summary>
     /// 아이템 버리는 함수

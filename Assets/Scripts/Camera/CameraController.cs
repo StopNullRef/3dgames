@@ -108,7 +108,7 @@ public class CameraController : MonoBehaviour
         {
             cameraState = CameraState.Build; 
 
-            CursorManager.Instance.canCusorChange = false;
+            IngameManager.Instance.canCusorChange = false;
 
             UIManager.Instance.CameraStateToSetCanvas(cameraState);
         });
@@ -117,7 +117,7 @@ public class CameraController : MonoBehaviour
         {
             if (cameraState == CameraState.Build)
             {
-                CursorManager.Instance.canCusorChange = true;
+                IngameManager.Instance.canCusorChange = true;
 
             }
 

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using Project.UI;
+using System;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -22,7 +23,7 @@ public class UIManager : Singleton<UIManager>
     /// <summary>
     /// 현재 열려 있는 모든 UI들을 담을 리스트
     /// </summary>
-    private List<UIBase> totalOpenUIList = new List<UIBase>();
+    public List<UIBase> totalOpenUIList = new List<UIBase>();
 
     /// <summary>
     /// 모든 UI들을 담을 리스트
@@ -34,6 +35,10 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     private Dictionary<string, UIBase> totalUIDict = new Dictionary<string, UIBase>();
 
+    /// <summary>
+    /// 업데이트를 돌려줄 UI리스트
+    /// </summary>
+    private List<UIBase> updateUIList = new List<UIBase>();
 
     /// <summary>
     /// 하이에라키에 있는 캔버스들을 담을 배열
@@ -57,13 +62,21 @@ public class UIManager : Singleton<UIManager>
 
     public void Update()
     {
-        InvenOnOff();
+        //InvenOnOff();
+
+        if (updateUIList.Count > 0)
+        {
+            foreach (var ui in updateUIList)
+            {
+                ui.OnUpate();
+            }
+        }
     }
-    // TODO 2/22 CanvasGroup을 이용해서 하도록 바꿀예정
 
 
     // public으로 열어서 에디터 창에서 넣어주게 될때
-    // 씬이 바뀌면 missing 이 뜨게 됨으로 일일이 넣어줘야 될듯하다. 
+    // 씬이 바뀌면 missing 이 뜨게 됨으로 일일이 넣어줘야 될듯하다.
+    // TODO 일일이 넣어주는거 말고 각각 start에서 uimanager로 등록하게 전부 바꾸기
     public void UIInitialize()
     {
 
@@ -96,7 +109,7 @@ public class UIManager : Singleton<UIManager>
         {
             invenActive = !invenActive;
             invenHolder.gameObject.SetActive(invenActive);
-            CursorManager.Instance.canCusorChange = !CursorManager.Instance.canCusorChange;
+            IngameManager.Instance.canCusorChange = !IngameManager.Instance.canCusorChange;
         }
     }
 
@@ -106,7 +119,7 @@ public class UIManager : Singleton<UIManager>
         {
             //Canvas canvas = new Canvas { name = "InGameUICanvas" };
             //Canvas canvas = Resources.Load<Canvas>("Prefabs/InGameUICanvas.prefab");
-            GameObject.Instantiate<Canvas>(Resources.Load<Canvas>("Prefabs/InGameUICanvas.prefab"),null,false);
+            GameObject.Instantiate<Canvas>(Resources.Load<Canvas>("Prefabs/InGameUICanvas.prefab"), null, false);
         }
 
         //UIInitialize();
@@ -180,6 +193,16 @@ public class UIManager : Singleton<UIManager>
 
     }
 
+    public void RigistUpdate(UIBase ui)
+    {
+        var type = ui.GetType().Name;
+        // 같은타입이 없다면 등록 있다면 이미있으므로 return
+        if (updateUIList.Find(_ => _.GetType().Name == type) == null)
+            updateUIList.Add(ui);
+        else
+            return;
+    }
+
     /// <summary>
     /// 열려있는 UI리스트 등록해주는 함수
     /// </summary>
@@ -199,10 +222,18 @@ public class UIManager : Singleton<UIManager>
             totalOpenUIList.Remove(ui);
     }
 
-    public T GetUI<T>() where T : UIBase
+
+    // getui에 버그가 존재 조건에 따라서 추가해서 찾는 함수 구현하기
+    public T GetUI<T>(Predicate<UIBase> predicate = null) where T : UIBase
     {
         T result = null;
         var typeName = typeof(T).Name;
+
+        if(predicate != null)
+        {
+            //TODO 여기부분 추가하기
+            return totalUIList.Find(predicate) as T;
+        }
 
         if (totalUIDict.ContainsKey(typeName))
         {

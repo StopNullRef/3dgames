@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CursorManager : Singleton<CursorManager>
+public class IngameManager : Singleton<IngameManager>
 {
     /// <summary>
     /// 기본 커서 texture
@@ -83,7 +83,10 @@ public class CursorManager : Singleton<CursorManager>
                     SetBasicCursor();
                     break;
             }
-
+        }
+        else
+        {
+            SetBasicCursor();
         }
     }
 

@@ -31,12 +31,19 @@ namespace Project.UI
         /// </summary>
         public bool isOpen;
 
+        /// <summary>
+        /// 업데이트를 돌려줄지아닌지 체크하는 변수
+        /// </summary>
+        public bool isUpate;
+
         public Define.UIType type = Define.UIType.None;
 
         public virtual void Start()
         {
             UIInit();
         }
+
+        
 
         /// <summary>
         /// UI를 초기화하는 함수
@@ -45,10 +52,21 @@ namespace Project.UI
         {
             UIManager.Instance.RegistUI(this);
 
+            if (isUpate)
+                UIManager.Instance.RigistUpdate(this);
+
             if (isOpen)
                 Open(true);
             else
                 Close(true);
+        }
+
+        /// <summary>
+        /// 매니저에서 돌릴 업데이트문
+        /// </summary>
+        public virtual void OnUpate()
+        {
+
         }
 
         /// <summary>
