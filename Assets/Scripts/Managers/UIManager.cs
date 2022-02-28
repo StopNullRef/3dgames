@@ -27,7 +27,7 @@ public class UIManager : Singleton<UIManager>
     /// <summary>
     /// 모든 UI들을 담을 리스트
     /// </summary>
-    private List<UIBase> totalUIList = new List<UIBase>();
+    public List<UIBase> totalUIList = new List<UIBase>();
 
     /// <summary>
     /// 모든 ui를 담을 딕셔너리
@@ -47,7 +47,12 @@ public class UIManager : Singleton<UIManager>
 
     protected override void Awake()
     {
-        // UIInitialize();
+        UIInitialize();
+    }
+
+    private void Start()
+    {
+        dropdown = GetUI<SceneDropDown>();
     }
 
     public void Update()
@@ -62,6 +67,7 @@ public class UIManager : Singleton<UIManager>
     public void UIInitialize()
     {
 
+
         if (Define.Scene.LoadingScene != (Define.Scene)UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex)
         {
             canvasArr = GameObject.FindObjectsOfType<Canvas>(true);
@@ -71,8 +77,8 @@ public class UIManager : Singleton<UIManager>
             invenHolder = canvasArr.Where(_ => _.CompareTag("InGameCanvas")).SingleOrDefault().transform.GetChild(1);
 
             //invenHolder = GameObject.Find(Define.FindDataString.ingameUI).transform.GetChild(1);
-            dropdown = invenHolder.parent.GetChild(0).GetComponent<SceneDropDown>();
-            dropdown.Init();
+            //dropdown = invenHolder.parent.GetChild(0).GetComponent<SceneDropDown>();
+            //dropdown.Init();
             inven = GameObject.FindObjectOfType<InventoryHandler>(true);
             invenPopUp = GameObject.FindObjectOfType<InvenPopUp>(true);
         }
@@ -98,11 +104,12 @@ public class UIManager : Singleton<UIManager>
     {
         if (GameObject.FindObjectOfType<Canvas>() == null)
         {
-            Canvas canvas = new Canvas { name = "InGameUICanvas" };
-            canvas = Resources.Load<Canvas>("Prefabs/InGameUICanvas.prefab");
+            //Canvas canvas = new Canvas { name = "InGameUICanvas" };
+            //Canvas canvas = Resources.Load<Canvas>("Prefabs/InGameUICanvas.prefab");
+            GameObject.Instantiate<Canvas>(Resources.Load<Canvas>("Prefabs/InGameUICanvas.prefab"),null,false);
         }
 
-        UIInitialize();
+        //UIInitialize();
     }
 
     /// <summary>
@@ -111,7 +118,7 @@ public class UIManager : Singleton<UIManager>
     public void CameraStateToSetCanvas(Define.CameraState cameraState)
     {
         // 처음에 모든 ui를 꺼준다
-        foreach(var ui in totalUIList)
+        foreach (var ui in totalUIList)
         {
             ui.Close();
         }
@@ -197,7 +204,7 @@ public class UIManager : Singleton<UIManager>
         T result = null;
         var typeName = typeof(T).Name;
 
-        if(totalUIDict.ContainsKey(typeName))
+        if (totalUIDict.ContainsKey(typeName))
         {
             result = totalUIDict[typeName] as T;
         }
@@ -213,9 +220,9 @@ public class UIManager : Singleton<UIManager>
     {
         UIBase result = null;
 
-        for(int i = totalOpenUIList.Count-1; i<=0; i--)
+        for (int i = totalOpenUIList.Count - 1; i <= 0; i--)
         {
-            if(totalOpenUIList != null)
+            if (totalOpenUIList != null)
             {
                 result = totalOpenUIList[i];
             }

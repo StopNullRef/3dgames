@@ -39,8 +39,9 @@ public class BuildingInvenButton : UIBase
     /// </summary>
     Transform invenHolder;
 
-    public void Start()
+    public override void Start()
     {
+        base.Start();
         Initialize();
     }
 

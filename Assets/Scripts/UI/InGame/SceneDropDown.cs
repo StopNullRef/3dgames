@@ -4,15 +4,17 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Project.UI;
 
-
-public class SceneDropDown : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class SceneDropDown : UIBase, IPointerEnterHandler, IPointerExitHandler
 {
     public Dropdown dropdown; // 씬이동에 사용할 드롭다운
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
+        isOpen = true;
+        base.Start();
         Init();
     }
 

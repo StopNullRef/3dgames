@@ -15,9 +15,13 @@ public class SceneManager : Singleton<SceneManager>
     {
         base.Awake();
         //대리자로 함수를 넣어서 씬이 바뀔때 호출되게 끔 할수 있다
+        Init();
+    }
+
+    private void Start()
+    {
         UnityEngine.SceneManagement.SceneManager.sceneLoaded -= SceneChangeInit;
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += SceneChangeInit;
-        Init();
     }
 
     public void Init()
@@ -59,7 +63,8 @@ public class SceneManager : Singleton<SceneManager>
             //Init();
             map = GameObject.Find("Maps").transform.GetChild(0);
             UIManager.Instance.UIInitialize();
-            UIManager.Instance.dropdown.dropdown.value = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex - 1;
+           // UIManager.Instance.dropdown.dropdown.value = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex - 1;
+            UIManager.Instance.GetUI<SceneDropDown>().dropdown.value = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex - 1;
         }
 
     }

@@ -85,6 +85,7 @@ public class DataManager : Singleton<DataManager>
     /// <param name="mode"></param>
     public void InvenDataPass(UnityEngine.SceneManagement.Scene scene, LoadSceneMode mode)
     {
+        //TODO 0224 인벤이 초기화 될때 null이다 인벤 초기화하는것을 getui로 바꾸기
 
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex != 0)
         {
