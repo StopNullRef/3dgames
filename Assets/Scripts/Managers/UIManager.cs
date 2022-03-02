@@ -12,10 +12,6 @@ public class UIManager : Singleton<UIManager>
     public GameObject invenUI; // 인벤토리 UI
     public GameObject invenMover; // 인벤토리 옮겨주는 부분
 
-    bool invenActive = false; //인벤 활성화 체크용 불타입 변수
-
-    Transform invenHolder;
-
     public SceneDropDown dropdown; // 드롭다운 받아줄거
 
     public InvenPopUp invenPopUp; // 인벤토리 팝업 UI
@@ -41,19 +37,9 @@ public class UIManager : Singleton<UIManager>
     private List<UIBase> updateUIList = new List<UIBase>();
 
     /// <summary>
-    /// 하이에라키에 있는 캔버스들을 담을 배열
-    /// </summary>
-    private Canvas[] canvasArr;
-
-    /// <summary>
     /// 인벤토리 컴포넌트
     /// </summary>
     public InventoryHandler inven;
-
-    protected override void Awake()
-    {
-        UIInitialize();
-    }
 
     private void Start()
     {
@@ -62,7 +48,6 @@ public class UIManager : Singleton<UIManager>
 
     public void Update()
     {
-        //InvenOnOff();
 
         if (updateUIList.Count > 0)
         {
@@ -74,55 +59,10 @@ public class UIManager : Singleton<UIManager>
     }
 
 
-    // public으로 열어서 에디터 창에서 넣어주게 될때
-    // 씬이 바뀌면 missing 이 뜨게 됨으로 일일이 넣어줘야 될듯하다.
-    // TODO 일일이 넣어주는거 말고 각각 start에서 uimanager로 등록하게 전부 바꾸기
-    public void UIInitialize()
-    {
-
-
-        if (Define.Scene.LoadingScene != (Define.Scene)UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex)
-        {
-            canvasArr = GameObject.FindObjectsOfType<Canvas>(true);
-
-            // 0 인벤 1 인벤 무브
-
-            invenHolder = canvasArr.Where(_ => _.CompareTag("InGameCanvas")).SingleOrDefault().transform.GetChild(1);
-
-            //invenHolder = GameObject.Find(Define.FindDataString.ingameUI).transform.GetChild(1);
-            //dropdown = invenHolder.parent.GetChild(0).GetComponent<SceneDropDown>();
-            //dropdown.Init();
-            inven = GameObject.FindObjectOfType<InventoryHandler>(true);
-            invenPopUp = GameObject.FindObjectOfType<InvenPopUp>(true);
-        }
-    }
-
-    /// <summary>
-    /// 인벤토리 온오프 기능
-    /// </summary>
-    void InvenOnOff()
-    {
-        if (SceneManager.Instance.sceneName == Define.Scene.LoadingScene)
-            return;
-
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            invenActive = !invenActive;
-            invenHolder.gameObject.SetActive(invenActive);
-            IngameManager.Instance.canCusorChange = !IngameManager.Instance.canCusorChange;
-        }
-    }
-
     public void SceneChangeInit(Scene scene, LoadSceneMode mod)
     {
         if (GameObject.FindObjectOfType<Canvas>() == null)
-        {
-            //Canvas canvas = new Canvas { name = "InGameUICanvas" };
-            //Canvas canvas = Resources.Load<Canvas>("Prefabs/InGameUICanvas.prefab");
             GameObject.Instantiate<Canvas>(Resources.Load<Canvas>("Prefabs/InGameUICanvas.prefab"), null, false);
-        }
-
-        //UIInitialize();
     }
 
     /// <summary>
@@ -132,9 +72,7 @@ public class UIManager : Singleton<UIManager>
     {
         // 처음에 모든 ui를 꺼준다
         foreach (var ui in totalUIList)
-        {
             ui.Close();
-        }
 
         switch (cameraState)
         {
@@ -229,7 +167,7 @@ public class UIManager : Singleton<UIManager>
         T result = null;
         var typeName = typeof(T).Name;
 
-        if(predicate != null)
+        if (predicate != null)
         {
             //TODO 여기부분 추가하기
             return totalUIList.Find(predicate) as T;

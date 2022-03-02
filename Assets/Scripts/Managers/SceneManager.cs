@@ -60,10 +60,7 @@ public class SceneManager : Singleton<SceneManager>
 
         if (sceneName != Define.Scene.LoadingScene)
         {
-            //Init();
             map = GameObject.Find("Maps").transform.GetChild(0);
-            UIManager.Instance.UIInitialize();
-           // UIManager.Instance.dropdown.dropdown.value = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex - 1;
             UIManager.Instance.GetUI<SceneDropDown>().dropdown.value = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex - 1;
         }
 

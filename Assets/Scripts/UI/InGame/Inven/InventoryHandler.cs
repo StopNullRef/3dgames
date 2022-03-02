@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Project.UI;
+using System.Linq;
 
 public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -42,7 +43,9 @@ public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDra
     /// </summary>
     RectTransform invenRect;
 
-    UIMover mover;
+    public UIMover mover;
+
+    ItemManager itemManager;
 
     public void Awake()
     {
@@ -57,7 +60,8 @@ public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDra
         originTempSlotPos = tempSlotImage.transform.localPosition;
         tempItemSlot = tempSlotImage.GetComponent<ItemSlot>();
         invenRect = transform.GetComponent<RectTransform>();
-        mover = transform.parent.GetComponentInChildren<UIMover>();
+        mover ??= transform.parent.GetComponentInChildren<UIMover>();
+        itemManager = ItemManager.Instance;
     }
 
     /// <summary>
@@ -67,9 +71,8 @@ public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDra
     public void SlotInitialize()
     {
         itemSlots.Clear();
-        for (int i = 1; i < 26; i++)
+        for (int i = 1; i < gameObject.transform.childCount; i++)
         {
-            //Instantiate(tempSlotImage, gameObject.transform).name = "Slot" + i;
             itemSlots.Add(gameObject.transform.GetChild(i - 1).GetComponent<ItemSlot>());
             itemSlots[i - 1].SlotInitialize();
         }
@@ -81,7 +84,6 @@ public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDra
         //처음에 들어올때 비워주고 다시 넣어줌
         beginDragItemSlot = null;
         endDragItemSlot = null;
-        //tempSlotImage.sprite = null;
 
         //마우스 위에 UI가 올려져있지않다면 작동x
         if (EventSystem.current.IsPointerOverGameObject() == false)
@@ -92,7 +94,7 @@ public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDra
         {
             //처음 드래그 될때 해당 slot이 비어있는 거라면 작동x
             if ((beginDragItemSlot == endDragItemSlot) ||
-                beginDragItemSlot.itemInfo == ItemManager.Instance.itemList[(int)Define.ScriptableItem.None])
+                beginDragItemSlot.itemInfo == itemManager.itemList[(int)Define.ScriptableItem.None])
                 return;
 
             tempItemSlot.itemInfo = beginDragItemSlot.itemInfo;
@@ -103,7 +105,7 @@ public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDra
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (beginDragItemSlot.itemInfo == ItemManager.Instance.itemList[(int)Define.ScriptableItem.None])
+        if (beginDragItemSlot == null || (beginDragItemSlot.itemInfo == itemManager.itemList[(int)Define.ScriptableItem.None]))
         {
             tempSlotImage.transform.GetChild(0).localPosition = originTempSlotPos;
             return;
@@ -114,119 +116,104 @@ public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDra
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        //이 부분 줄이기 최대한 깔끔하게 만들어 보기
-
         //처음 드래그가 끝날때 tempslot을 다시 제자리로 돌려줌
         tempSlotImage.transform.GetChild(0).localPosition = originTempSlotPos;
-
 
         //RectTransformUtility.RectangleContainsScreenPoint
         if (!RectTransformUtility.RectangleContainsScreenPoint(invenRect, eventData.position))
         {
             //EndDrag할때 inven rect범위를 넘으면 삭제 할건지 팝업 창띄워주는부분
-            UIManager.Instance.invenPopUp.gameObject.SetActive(true);
+            UIManager.Instance.GetUI<InvenPopUp>().Open();
             return;
         }
 
-        // 놨을때 gameobj에 itemslot component가 없을시 작동 x 
-        if (eventData.pointerCurrentRaycast.gameObject.TryGetComponent<ItemSlot>(out endDragItemSlot))
+        eventData.pointerCurrentRaycast.gameObject.TryGetComponent<ItemSlot>(out endDragItemSlot);
+
+        if ((endDragItemSlot == null) || (beginDragItemSlot == endDragItemSlot))
+            return;
+
+        int EndDragMaxCount = MaxCountReturn(beginDragItemSlot.itemInfo);
+
+        // BeginDarg slot이랑 EndDrag slot이랑 같이 않으면 서로 바꿔줌
+        if (endDragItemSlot.itemInfo.itemCode != beginDragItemSlot.itemInfo.itemCode)
         {
-            if ((beginDragItemSlot == endDragItemSlot) || (endDragItemSlot == null))
-                return;
+            tempItemSlot.itemInfo = endDragItemSlot.itemInfo;
+            tempItemSlot.itemCount = endDragItemSlot.itemCount;
 
-            int EndDragMaxCount = MaxCountReturn(beginDragItemSlot.itemInfo);
+            endDragItemSlot.itemInfo = beginDragItemSlot.itemInfo;
+            endDragItemSlot.itemCount = beginDragItemSlot.itemCount;
 
-            // BeginDarg slot이랑 EndDrag slot이랑 같이 않으면 서로 바꿔줌
-            if (endDragItemSlot.itemInfo.itemCode != beginDragItemSlot.itemInfo.itemCode)
+            beginDragItemSlot.itemInfo = tempItemSlot.itemInfo;
+            beginDragItemSlot.itemCount = tempItemSlot.itemCount;
+        }
+        else
+        {
+            // 드래그 시작 이랑 끝이랑 아이템이 같을때  합쳐줘야되는데 최대치를 넘으면
+            // 최대 소지갯수랑 합친거를 뺀 나머지를 넣어주고 다른  한쪽에는 최대치를 넣어줌
+            if ((beginDragItemSlot.itemCount + endDragItemSlot.itemCount) > EndDragMaxCount)
             {
-                tempItemSlot.itemInfo = endDragItemSlot.itemInfo;
-                tempItemSlot.itemCount = endDragItemSlot.itemCount;
+                int overCount = (beginDragItemSlot.itemCount + endDragItemSlot.itemCount) - EndDragMaxCount;
 
-                endDragItemSlot.itemInfo = beginDragItemSlot.itemInfo;
-                endDragItemSlot.itemCount = beginDragItemSlot.itemCount;
-
-                beginDragItemSlot.itemInfo = tempItemSlot.itemInfo;
-                beginDragItemSlot.itemCount = tempItemSlot.itemCount;
+                beginDragItemSlot.itemCount = overCount;
+                endDragItemSlot.itemCount = EndDragMaxCount;
             }
-            else if (endDragItemSlot.itemInfo.itemCode == beginDragItemSlot.itemInfo.itemCode)
+            else
             {
-                // 드래그 시작 이랑 끝이랑 아이템이 같을때  합쳐줘야되는데 최대치를 넘으면
-                // 최대 소지갯수랑 합친거를 뺀 나머지를 넣어주고 다른  한쪽에는 최대치를 넣어줌
-                if ((beginDragItemSlot.itemCount + endDragItemSlot.itemCount) > EndDragMaxCount)
-                {
-                    int overCount = (beginDragItemSlot.itemCount + endDragItemSlot.itemCount) - EndDragMaxCount;
-
-                    beginDragItemSlot.itemCount = overCount;
-                    endDragItemSlot.itemCount = EndDragMaxCount;
-                    InvenRefresh();
-                }
-                else
-                {
-                    // 합쳤을때 최대 갯수가 아니라면 합쳐주고 처음 드래그 슬롯은 비워줌
-                    endDragItemSlot.itemCount += beginDragItemSlot.itemCount;
-                    beginDragItemSlot.itemCount = 0;
-                    beginDragItemSlot.itemInfo = ItemManager.Instance.itemList[(int)Define.ScriptableItem.None];
-                }
+                // 합쳤을때 최대 갯수가 아니라면 합쳐주고 처음 드래그 슬롯은 비워줌
+                endDragItemSlot.itemCount += beginDragItemSlot.itemCount;
+                beginDragItemSlot.itemCount = 0;
+                beginDragItemSlot.itemInfo = itemManager.itemList[(int)Define.ScriptableItem.None];
             }
-
         }
 
         InvenRefresh();
     }
 
+    // 들여쓰기가 너무 많다 가독성이 떨어짐
+    // 하나의 리스트에 받고 작동시키게끔하자
     public void AddItem(ObjInfo obj)
     {
         int itemMaxCount = MaxCountReturn(obj.ItemDrop);
 
-        // 아이템 이 같은게 있다면 갯수만 해당 슬롯에 접근해서
-        // 아이템 갯수만 늘려준다.
-        for (int i = 0; i < itemSlots.Count; i++)
+        var nonItem = itemManager.itemList[(int)Define.ScriptableItem.None];
+
+        // 아이템 최대 갯수를 넘지않으며 획득할아이템과 같은 아이템을 들고있는 슬롯을 찾는다
+        var addItemSlot = itemSlots.Where(_ => (_.itemCount < itemMaxCount) && (_.itemInfo.itemCode == obj.ItemDrop.itemCode)).FirstOrDefault();
+
+        if (addItemSlot == null)
+            AddNonHaveItem();
+        else
+            AddHaveItem();
+
+        // 바뀐 정보에 따라 이미지와 텍스트 보이게 끔 만듦
+        InvenRefresh();
+
+        // 인벤에 같은 아이템이 있을 때 작동하는 함수
+        void AddHaveItem()
         {
-            //처음에 슬롯들을 검사해서 슬롯에 있는 아이템코드가 같고
-            //그 슬롯이 999개보다 작을때 갯수 늘려줌
-            if (itemSlots[i].itemInfo.itemCode == obj.ItemDrop.itemCode && (itemSlots[i].itemCount < itemMaxCount)) // 아이템코드가 같을때
+            var addItemCount = UnityEngine.Random.Range(899, Define.MaxCount.ObjectMaxDrop);
+
+            if ((addItemSlot.itemCount + addItemCount) > itemMaxCount)
             {
-                itemSlots[i].itemCount += UnityEngine.Random.Range(899, Define.MaxCount.ObjectMaxDrop);
+                int remainItemCount = (addItemSlot.itemCount + addItemCount) - itemMaxCount;
 
-                //만약에 슬롯에 아이템을 넣어줫는데 최대 갯수를 넘었을때
-                //최대갯수 빼고 나머지를 빈슬롯에 넣어 준다
-                if (itemSlots[i].itemCount > itemMaxCount)
-                {
-                    for (int k = 0; k < itemSlots.Count; k++)
-                    {
-                        if (itemSlots[k].itemInfo == ItemManager.Instance.itemList[(int)Define.ScriptableItem.None])
-                        {
-                            int overCount = itemSlots[i].itemCount - 999;
-                            itemSlots[i].itemCount -= overCount;
+                // 아이템 최대 갯수로 넣어주고
+                addItemSlot.SlotInitialize(obj, itemMaxCount);
 
-                            itemSlots[k].itemInfo = obj.ItemDrop;
-
-                            itemSlots[k].itemCount += overCount;
-
-                            itemSlots[k].SlotRefresh(obj.ItemDrop, itemSlots[k].itemCount);
-                            itemSlots[i].SlotRefresh(obj.ItemDrop, itemSlots[i].itemCount);
-                            return;
-                        }
-                    }
-                }
-                itemSlots[i].SlotRefresh(obj.ItemDrop, itemSlots[i].itemCount);
-                return;
+                // 비어있는 아이템 슬롯 찾아서 넣어주기
+                itemSlots.Where(_ => _.itemInfo == nonItem).FirstOrDefault().SlotInitialize(obj, remainItemCount);
             }
-
+            else
+                addItemSlot.SlotInitialize(addItemCount);
         }
 
-        // 아이템이 같은게 없다면 슬롯이 비어있는지 체크후
-        // 빈 슬롯에 아이템을 넣어준다
-        for (int j = 0; j < itemSlots.Count; j++)
+        // 인벤에 같은 아이템이 없을 때 작동하는 함수
+        void AddNonHaveItem()
         {
-            if (itemSlots[j].itemInfo == ItemManager.Instance.itemList[(int)Define.ScriptableItem.None])
-            {
-                itemSlots[j].itemInfo = obj.ItemDrop;
-                itemSlots[j].itemCount += UnityEngine.Random.Range(899, Define.MaxCount.ObjectMaxDrop);
-                itemSlots[j].SlotRefresh(obj.ItemDrop, itemSlots[j].itemCount);
-                itemSlots[j].itemInfo = obj.ItemDrop;
-                return;
-            }
+            // 비어있는 아이템 슬롯을 찾는다
+            addItemSlot = itemSlots.Where(_ => _.itemInfo == nonItem).FirstOrDefault();
+            // 해당슬롯 아이템 정보 넣어주고 초기화
+            addItemSlot.SlotInitialize(obj, UnityEngine.Random.Range(899, Define.MaxCount.ObjectMaxDrop));
         }
 
     }
@@ -272,9 +259,6 @@ public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDra
         return itemMaxCount;
     }
 
-
-    //Today invenmove를 받아서 온오프 같이해주는거구현
- 
     public override void Open(bool initialValue = false)
     {
         base.Open(initialValue);
@@ -337,16 +321,8 @@ public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDra
             slot.itemCount = 0;
         }
         else
-        {
             //버릴갯수가 보유갯수보다 작다면 갯수만 차감
             slot.itemCount -= count;
-        }
         InvenRefresh();
     }
-
-    private void OnEnable()
-    {
-        InvenRefresh();
-    }
-
 }

@@ -2451,6 +2451,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOpen: 0
+  isUpate: 0
   type: 0
   arrow: {fileID: 258255037487973027}
   invenBackGround: {fileID: 258255038517806700}
@@ -3033,12 +3034,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOpen: 0
+  isUpate: 0
   type: 0
   tempSlotImage: {fileID: 258255038714925819}
   tempItemSlot: {fileID: 258255038714925818}
   itemSlots: []
   beginDragItemSlot: {fileID: 0}
   endDragItemSlot: {fileID: 0}
+  mover: {fileID: 258255038704627941}
 --- !u!225 &2715078804445492845
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4836,6 +4839,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOpen: 1
+  isUpate: 0
   type: 0
   dropdown: {fileID: 0}
 --- !u!225 &258255037712810235
@@ -5188,6 +5192,7 @@ GameObject:
   - component: {fileID: 258255037761881734}
   - component: {fileID: 258255037761881737}
   - component: {fileID: 258255037761881736}
+  - component: {fileID: 5648021044886410121}
   m_Layer: 5
   m_Name: Mover
   m_TagString: Untagged
@@ -5264,7 +5269,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6e20788c37f432439c493f623a4d802, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isOpen: 0
+  isUpate: 0
+  type: 0
   holder: {fileID: 0}
+--- !u!225 &5648021044886410121
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258255037761881738}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &258255037796756497
 GameObject:
   m_ObjectHideFlags: 0
@@ -9140,9 +9160,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOpen: 0
+  isUpate: 0
   type: 0
-  description: {fileID: 0}
-  okayClick: 0
+  okayButton: {fileID: 258255038258468421}
+  cancelButton: {fileID: 258255038702529266}
+  mover: {fileID: 258255037761881736}
 --- !u!225 &258255038361771320
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -11802,6 +11824,7 @@ GameObject:
   - component: {fileID: 258255038704627943}
   - component: {fileID: 258255038704627942}
   - component: {fileID: 258255038704627941}
+  - component: {fileID: 291152418083150177}
   m_Layer: 5
   m_Name: InventoryMover
   m_TagString: Untagged
@@ -11878,7 +11901,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6e20788c37f432439c493f623a4d802, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isOpen: 0
+  isUpate: 0
+  type: 0
   holder: {fileID: 0}
+--- !u!225 &291152418083150177
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258255038704627945}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &258255038704866065
 GameObject:
   m_ObjectHideFlags: 0
@@ -14965,6 +15003,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOpen: 0
+  isUpate: 0
   type: 0
   middleButtom: {fileID: 258255037396975630}
 --- !u!225 &258255039183634670

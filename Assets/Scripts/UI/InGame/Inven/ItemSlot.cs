@@ -85,4 +85,21 @@ public class ItemSlot : MonoBehaviour
         itemCount = 0;
     }
 
+    /// <summary>
+    /// 아이템 드랍되는거 추가해서 설정해주는 함수
+    /// </summary>
+    /// <param name="addItem"></param>
+    /// <param name="dropCount"></param>
+    public void SlotInitialize(ObjInfo addItem,int dropCount)
+    {
+        this.itemInfo = addItem.ItemDrop;
+        this.itemCount = dropCount;
+        this.itemInfo = addItem.ItemDrop;
+    }
+
+    public void SlotInitialize(int dropCount)
+    {
+        this.itemCount += dropCount;
+    }
+
 }
