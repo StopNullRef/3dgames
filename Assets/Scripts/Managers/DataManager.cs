@@ -38,7 +38,7 @@ public class DataManager : Singleton<DataManager>
 
     private void Start()
     {
-        itemSlots = UIManager.Instance.inven.itemSlots;
+        itemSlots = UIManager.Instance.GetUI<InventoryHandler>().itemSlots;
         invenLoadDict = FromJson<Dictionary<int, Define.ItemSaveInfo>>("Assets/Json/UserInvenData.json");
     }
 

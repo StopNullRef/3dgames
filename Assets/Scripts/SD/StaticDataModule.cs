@@ -13,11 +13,13 @@ namespace Project.SD
     public class StaticDataModule
     {
         public List<SDSystemMessage> sdSystemMessages = new List<SDSystemMessage>();
+        public List<SDBuildItem> sdBuildItems = new List<SDBuildItem>();
 
         public void Initialize()
         {
             var loader = new StaticDataLoader();
             loader.Load<SDSystemMessage>(out sdSystemMessages);
+            loader.Load<SDBuildItem>(out sdBuildItems);
         }
 
         private class StaticDataLoader
