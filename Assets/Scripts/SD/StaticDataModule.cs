@@ -14,12 +14,14 @@ namespace Project.SD
     {
         public List<SDSystemMessage> sdSystemMessages = new List<SDSystemMessage>();
         public List<SDBuildItem> sdBuildItems = new List<SDBuildItem>();
+        public List<SDStore> sdStores = new List<SDStore>();
 
         public void Initialize()
         {
             var loader = new StaticDataLoader();
             loader.Load<SDSystemMessage>(out sdSystemMessages);
             loader.Load<SDBuildItem>(out sdBuildItems);
+            loader.Load<SDStore>(out sdStores);
         }
 
         private class StaticDataLoader

@@ -37,11 +37,5 @@ public class ItemManager : Singleton<ItemManager>
         {
             itemList.Add(resources[i]);
         }
-
-        /*        foreach (ItemScriptableObj itemScriptable in itemList)
-                {
-                    Debug.Log($"리소스 이름 : " + itemScriptable.name);
-                    Debug.Log(itemScriptable.itemName);
-                }*/
     }
 }

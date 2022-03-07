@@ -70,7 +70,6 @@ namespace Project.Editor
                     // 변환하는 컨버터 객체 생성
                     var excelToJsonConverter = new ExcelToJsonConvert(fullFileName, $"{rootPath}/{StaticDataPath.SDJson}");
 
-                    //C:/Users/Administrator/Desktop/3dgames/SystemMessage
                     // 변환에 성공했는지 체크
                     if (excelToJsonConverter.SaveJsonFiles() > 0)
                     {

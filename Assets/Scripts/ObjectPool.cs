@@ -37,8 +37,7 @@ public class ObjectPool<T> where T : MonoBehaviour, IPoolableObject
         obj.gameObject.SetActive(false);
     }
 
-    // TODO 2/17 여기서 부터 만들기
-    // 오브젝트 풀링 다시 고치기!!
+
     public T GetObject()
     {
         // 풀에서 재사용이 가능한 객체를 찾는다

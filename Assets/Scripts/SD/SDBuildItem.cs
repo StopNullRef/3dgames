@@ -10,9 +10,12 @@ public class SDBuildItem : StaticDataBase
     name string
     resourcePath string[] 0 : iconpath 1: prefabInstance
     cost int[]  0 : costitemindex 1 : costitemcount*/
-
+    [SerializeField]
     string name;
+
+    [SerializeField]
     string[] resourcePath;
+    [SerializeField]
     int[] cost;
 
 }

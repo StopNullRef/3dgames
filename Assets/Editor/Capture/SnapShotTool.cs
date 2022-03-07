@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-//TODO 12/23 이거 툴한번 만들어보기
-
 public class SnapShotTool : EditorWindow
 {
 
@@ -25,15 +23,10 @@ public class SnapShotTool : EditorWindow
 
     Object[] snapShotObjects;
 
-    //private SnapshotCamera snapshotCamera;
-    //public Texture2D texture;
-
     [MenuItem("Tools/SnapShotTool")]
     static void Init()
     {
         SnapShotTool snapShot = (SnapShotTool)EditorWindow.GetWindow(typeof(SnapShotTool));
-
-        //snapshotCamera = SnapshotCamera.MakeSnapshotCamera();
 
         snapShot.Show();
     }
@@ -49,18 +42,9 @@ public class SnapShotTool : EditorWindow
         };
         GUILayout.Space(10);
 
-        //if (!Directory.Exists(path))
-        //   Directory.CreateDirectory(path);
-
         if (GUILayout.Button("SnapShot", options))
         {
             LoadAllPrefabs();
-
-            // for(int i= 0; i < snapShotObjects.Length; i++)
-            // {
-            //     Texture2D icon = UnityEditor.AssetPreview.GetAssetPreview(snapShotObjects[i]);
-            //     File.WriteAllBytes(Application.dataPath + "/Snapshots/" + snapShotObjects[i].name + ".png", icon.EncodeToPNG());
-            // }
 
             for (int i = 0; i < snapShotObjects.Length; i++)
             {

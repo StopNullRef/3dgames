@@ -162,16 +162,11 @@ public class UIManager : Singleton<UIManager>
 
 
     // getui에 버그가 존재 조건에 따라서 추가해서 찾는 함수 구현하기
-    public T GetUI<T>(Predicate<UIBase> predicate = null) where T : UIBase
+    public T GetUI<T>() where T : UIBase
     {
         T result = null;
         var typeName = typeof(T).Name;
 
-        if (predicate != null)
-        {
-            //TODO 여기부분 추가하기
-            return totalUIList.Find(predicate) as T;
-        }
 
         if (totalUIDict.ContainsKey(typeName))
         {
@@ -180,6 +175,21 @@ public class UIManager : Singleton<UIManager>
 
         return result;
     }
+
+    public T GetUI<T>(string moverName) where T : UIBase
+    {
+        T result = null;
+        var typeName = typeof(T).Name;
+
+        if (moverName != null)
+        {
+            return totalUIList.Where(_ => _.gameObject.name == moverName + "Mover").SingleOrDefault() as T;
+        }
+
+        return result;
+    }
+
+
 
     /// <summary>
     /// 열려있는 UI창중 제일 위에있는 UI를 반환하는 함수
