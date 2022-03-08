@@ -29,11 +29,11 @@ public class GameManager : Singleton<GameManager>
             return;
 
         DontDestroyOnLoad(this);
+        SD.Initialize();
     }
 
     private void Start()
     {
-        SD.Initialize();
         //씬이 변경될때 매니져가 가지고있어야될것들 초기화해주는 부분
         // awake onEnable 이 돌고 난후에 sceneloaded가 돈다
         SceneInitialize(UIManager.Instance.SceneChangeInit);

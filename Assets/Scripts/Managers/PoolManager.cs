@@ -139,4 +139,14 @@ public class PoolManager : Singleton<PoolManager>
         }
     }
 
+    public ObjectPool<T> GetPool<T>() where T : MonoBehaviour,IPoolableObject
+    {
+        var type = typeof(T);
+
+        if(!poolDict.ContainsKey(type))
+            return null;
+
+        return poolDict[type] as ObjectPool<T>;
+    }
+
 }

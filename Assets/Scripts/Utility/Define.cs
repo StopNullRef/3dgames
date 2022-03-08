@@ -43,6 +43,7 @@ namespace Define
     /// </summary>
     public class ResourcePath
     {
+        public const string storeSlot = "Prefabs/UI/SaleSlot";
         #region ItemPath
         public const string woodItem = "Texture/ItemIcon/Material/Wooden Plank";
         #endregion

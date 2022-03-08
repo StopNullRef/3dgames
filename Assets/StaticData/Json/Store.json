@@ -6,6 +6,16 @@
       1000,
       1001,
       1002
-    ]
+    ],
+    "sceneRef": 3,
+    "stagePos": [
+      2.1,
+      -0.5,
+      -12.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "resourcePath": "Prefabs/NPC/Cat"
   }
 ]

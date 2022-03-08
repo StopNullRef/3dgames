@@ -64,9 +64,6 @@ namespace Project.Inven
             SetMaskable();
         }
 
-        // TODO 드래그앤 드랍부분 구현하기
-        // SnapShot하는 오픈소스 보고 적용하는거 하기
-
 
         public override void OnBeginDrag(PointerEventData eventData)
         {

@@ -1,5 +1,8 @@
+using Project.DB;
+using Project.Object;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,6 +13,10 @@ public class SceneManager : Singleton<SceneManager>
     public int sceneNum; // 로드씬을 해주기위한 변수
 
     public Transform map; // 하이에라키에서 맵을 가지고있는 GameObejct를 받는 변수
+
+    public Transform npcHolder;
+
+    public List<Store> stores { get; private set; } = new List<Store>();
 
     protected override void Awake()
     {
@@ -65,6 +72,30 @@ public class SceneManager : Singleton<SceneManager>
         }
 
     }
+
+    public void SpawnStore()
+    {
+        var sdStores = GameManager.Instance.SD.sdStores.Where(_ => _.sceneRef == sceneName).ToList();
+        var resourceManager = ResourceManager.Instance;
+
+        npcHolder ??= new GameObject("NPCHolder").transform;
+
+
+
+        for (int i = 0; i < sdStores.Count; i++)
+        {
+ 
+            var storeObj = Instantiate(resourceManager.ReourceLoad<GameObject>(sdStores[i].resourcePath), npcHolder);
+
+            var store = storeObj.GetComponent<Store>();
+
+            store.Initialize(new BoStore(sdStores[i]));
+
+            stores.Add(store);
+        }
+
+    }
+
 
     // 맵에 tag 와 layer 넣어주는 함수
     // map에 있는 GameObject 의 앞글자부터 검사를 해서 같으면 tag와 해당 object의 자식에게 layer 를 넣어줌

@@ -1,18 +1,23 @@
+using Project.DB;
+using Project.Object;
 using Project.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIStore : UIBase
 {
     public UIMover mover;
     public InventoryHandler inven;
     UIManager uiManager;
-    SDStore sd;
 
-    // TODO 0307
-    // 상점 구현하고 클릭시 작동하게 끔 만들기
+    public BoStore boStore;
+
+    public Transform content;
+
+   public List<StoreSlot> storeSlots = new List<StoreSlot>();
 
     public override void Start()
     {
@@ -33,12 +38,19 @@ public class UIStore : UIBase
         }
     }
 
+    private void Initialize(Store store)
+    {
+        this.boStore = store.boStore;
+        // TODO npc로 부터 bostore에 대한 정보를 받아 초기화 시켜 슬롯을 동적 생성 시킨후에 작동하게 해주기
+    }
+
     public override void Open(bool initialValue = false)
     {
         base.Open(initialValue);
 
         uiManager = UIManager.Instance;
 
+        // 열고 닫을때 uimover랑 인벤토리랑 같이 열고 닫기 되게끔
         uiManager.GetUI<InventoryHandler>()?.Open();
         uiManager.GetUI<UIMover>("Store")?.Open();
     }
@@ -48,6 +60,8 @@ public class UIStore : UIBase
         base.Close(intialValue);
 
         uiManager = UIManager.Instance;
+
+        // 열고 닫을때 uimover랑 인벤토리랑 같이 열고 닫기 되게끔
 
         uiManager.GetUI<InventoryHandler>()?.Close();
         uiManager.GetUI<UIMover>("Store")?.Close();
