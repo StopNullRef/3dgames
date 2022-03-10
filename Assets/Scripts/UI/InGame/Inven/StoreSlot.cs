@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Project.UI
 {
-    public class StoreSlot :  MonoBehaviour, IPoolableObject
+    public class StoreSlot : MonoBehaviour, IPoolableObject
     {
         // TODO 03/08 버튼클릭으로 구현하지 말고
         // 마우스가 해당 범위안에 들어왔을때
@@ -28,14 +28,66 @@ namespace Project.UI
 
         public bool CanRecycle { get; set; }
 
-        public void Start()
-        {
-                        
-        }
+        BoBuilditem saleItem;
 
-        public void Initilaize(BoStore bostore)
+        public void Initilaize(BoBuilditem buildItem)
         {
             //TODO 구현하기
+
+            // 아이템
+            // 인덱스 아이템이름 리소스 패스 0,1 0 아이콘 1 프리팹오브젝트위치 cost 재료 아이템, 갯수
+
+            saleItem = buildItem;
+            SetSlot(buildItem);
+        }
+
+        public void SlotRefresh()
+        {
+            var sdItem = saleItem.sdBuildItem;
+
+            var resourceManager = ResourceManager.Instance;
+
+            saleImage = resourceManager.ReourceLoad<Image>(sdItem.resourcePath[0]);
+            saleItemName.text = sdItem.name;
+
+            // 재료 이미지를 어디서 가지고있나? 해당 정보 넣어주기
+            costImage = resourceManager.ReourceLoad<Image>(sdItem.resourcePath[2]);
+            costText.text = sdItem.cost[1].ToString();
+        }
+
+        public void SetSlot(BoBuilditem buildItem)
+        {
+            var sdItem = buildItem.sdBuildItem;
+
+            var resourceManager = ResourceManager.Instance;
+
+            var inven = UIManager.Instance.GetUI<InventoryHandler>();
+
+            saleImage = resourceManager.ReourceLoad<Image>(sdItem.resourcePath[0]);
+            saleItemName.text = sdItem.name;
+
+            // 재료 이미지를 어디서 가지고있나? 해당 정보 넣어주기
+            costImage = resourceManager.ReourceLoad<Image>(sdItem.resourcePath[2]);
+            costText.text = sdItem.cost[1].ToString();
+
+            haveImage = costImage;
+            haveText.text = HavenItem().ToString();
+
+
+            // 유저가 보유한 아이템갯수를 리턴해주는 함수
+            int HavenItem()
+            {
+                var haveCostItem = inven.itemSlots.Where(_ => _.itemInfo.itemCode == sdItem.index).ToList();
+                int count = 0;
+
+                foreach(var item in haveCostItem)
+                {
+                    count += item.itemCount;
+                }
+
+                return count;
+            }
+
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[SerializeField]
 public class SDBuildItem : StaticDataBase
 {
     /*    건축아이템 sddata
@@ -11,11 +12,11 @@ public class SDBuildItem : StaticDataBase
     resourcePath string[] 0 : iconpath 1: prefabInstance
     cost int[]  0 : costitemindex 1 : costitemcount*/
     [SerializeField]
-    string name;
+    public string name;
 
     [SerializeField]
-    string[] resourcePath;
+    public string[] resourcePath;
     [SerializeField]
-    int[] cost;
+    public int[] cost;
 
 }

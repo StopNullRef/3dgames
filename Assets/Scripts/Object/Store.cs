@@ -1,4 +1,5 @@
 ﻿using Project.DB;
+using Project.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,10 +35,23 @@ namespace Project.Object
             coll ??= GetComponent<Collider>();
         }
 
-        //TODO 03/08여기서 부터 구현하기
-        public void OnStore()
+        //TODO 03/10 여기 유저와 상호작용해서 구현하기
+
+
+        //현재 유저와 상호작용인지 체크하는함수
+        private void CheckInteraction()
         {
 
+        }
+
+        /// <summary>
+        /// 상점 열었을때 UI정보 초기화해주는 함수
+        /// </summary>
+        public void OnStore()
+        {
+            var storeUI = UIManager.Instance.GetUI<UIStore>();
+
+            storeUI.Initialize(this);
         }
     }
 }

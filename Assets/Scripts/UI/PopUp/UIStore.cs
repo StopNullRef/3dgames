@@ -17,7 +17,7 @@ public class UIStore : UIBase
 
     public Transform content;
 
-   public List<StoreSlot> storeSlots = new List<StoreSlot>();
+    public List<StoreSlot> storeSlots = new List<StoreSlot>();
 
     public override void Start()
     {
@@ -38,10 +38,27 @@ public class UIStore : UIBase
         }
     }
 
-    private void Initialize(Store store)
+    public void Initialize(Store store)
     {
         this.boStore = store.boStore;
         // TODO npc로 부터 bostore에 대한 정보를 받아 초기화 시켜 슬롯을 동적 생성 시킨후에 작동하게 해주기
+
+        // 슬롯 생성부터하기
+        var poolManager = PoolManager.Instance;
+
+        var sdStore = store.boStore.sdStore;
+
+        var sd = GameManager.Instance.SD;
+
+
+        for(int i=0; i < sdStore.saleItem.Length; i++)
+            storeSlots.Add(poolManager.GetPool<StoreSlot>().GetObject());
+
+        for (int j = 0; j < sdStore.saleItem.Length; j++)
+        {
+            storeSlots[j].transform.SetParent(content);
+            storeSlots[j].Initilaize(new BoBuilditem(sd.sdBuildItems.Where(_=>_.index == sdStore.saleItem[j]).SingleOrDefault()));
+        }
     }
 
     public override void Open(bool initialValue = false)

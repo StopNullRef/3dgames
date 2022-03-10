@@ -39,7 +39,7 @@ public class GameManager : Singleton<GameManager>
         SceneInitialize(UIManager.Instance.SceneChangeInit);
         SceneInitialize(SceneManager.Instance.SceneChangeInit);
         SceneInitialize(PoolManager.Instance.Init);
-        SceneInitialize(DataManager.Instance.InvenDataPass);
+        //SceneInitialize(DataManager.Instance.InvenDataPass);
     }
 
 

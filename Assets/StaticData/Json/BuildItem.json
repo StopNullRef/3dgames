@@ -3,8 +3,9 @@
     "index": 1000,
     "name": "Fence",
     "resourcePath": [
-      "Assets/Resources/Prefabs/ToIcon/Fence",
-      "Assets/Resources/Prefabs/BuildObject/Fence"
+      "Prefabs/ToIcon/Fence",
+      "Prefabs/BuildObject/Fence",
+      "Texture/ItemIcon/Material/WoodenPlank"
     ],
     "cost": [
       3001,
@@ -15,8 +16,9 @@
     "index": 1001,
     "name": "Barrel",
     "resourcePath": [
-      "Assets/Resources/Prefabs/ToIcon/Barrel",
-      "Assets/Resources/Prefabs/BuildObject/Barrel"
+      "Prefabs/ToIcon/Barrel",
+      "Prefabs/BuildObject/Barrel",
+      "Texture/ItemIcon/Material/WoodenPlank"
     ],
     "cost": [
       3001,
@@ -27,8 +29,9 @@
     "index": 1002,
     "name": "House",
     "resourcePath": [
-      "Assets/Resources/Prefabs/ToIcon/Baker_house",
-      "Assets/Resources/Prefabs/BuildObject/Baker_house"
+      "Prefabs/ToIcon/Baker_house",
+      "Prefabs/BuildObject/Baker_house",
+      "Texture/ItemIcon/Material/WoodenPlank"
     ],
     "cost": [
       3001,

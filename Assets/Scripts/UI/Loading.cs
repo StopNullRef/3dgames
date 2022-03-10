@@ -100,6 +100,8 @@ public class Loading : MonoBehaviour
         AsyncOperation ao = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(indexNum);
         ao.allowSceneActivation = false;
 
+        var sceneManager = SceneManager.Instance;
+
         while (!ao.isDone)
         {
 
@@ -115,7 +117,7 @@ public class Loading : MonoBehaviour
                 character.transform.localPosition.y, character.transform.localPosition.z);
 
             //처음이거나 문자열의 길이가 6이 넘었을때 다시 처음으로 초기화
-            if (Mathf.Approximately(textTime,0) || (loadingText.text.Length > loadingTextResetTime))
+            if (Mathf.Approximately(textTime, 0) || (loadingText.text.Length > loadingTextResetTime))
             {
                 loadingText.text = loadingTextStr;
             }
@@ -129,11 +131,16 @@ public class Loading : MonoBehaviour
             // 비동기화 로딩이 완료가 되어도 일부러 씬을 이동안시켜주고 지연시켜주는 부분
             if (time >= loadingDelayTime)
             {
-                SceneManager.Instance.sceneNum = indexNum;
+                sceneManager.sceneNum = indexNum;
                 ao.allowSceneActivation = true;
+                //Debug.Log($"씬네임{ sceneManager.sceneName},씬넘{(Define.Scene)sceneManager.sceneNum}");
+                sceneManager.sceneName = (Define.Scene)sceneManager.sceneNum;
             }
             yield return null;
         }
+
+
     }
+
 
 }

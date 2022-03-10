@@ -40,6 +40,8 @@ public class DataManager : Singleton<DataManager>
     {
         itemSlots = UIManager.Instance.GetUI<InventoryHandler>().itemSlots;
         invenLoadDict = FromJson<Dictionary<int, Define.ItemSaveInfo>>("Assets/Json/UserInvenData.json");
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= InvenDataPass;
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += InvenDataPass;
     }
 
     /// <summary>
@@ -83,12 +85,12 @@ public class DataManager : Singleton<DataManager>
     /// </summary>
     /// <param name="scene"></param>
     /// <param name="mode"></param>
-    public void InvenDataPass(UnityEngine.SceneManagement.Scene scene, LoadSceneMode mode)
+    public void InvenDataPass(UnityEngine.SceneManagement.Scene current, UnityEngine.SceneManagement.Scene next)
     {
 
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex != 0)
         {
-            UIManager.Instance.inven.SlotInitialize();
+            UIManager.Instance.inven?.SlotInitialize();
             InvenSave();
             InvenLoad();
         }
@@ -100,7 +102,8 @@ public class DataManager : Singleton<DataManager>
     /// </summary>
     public void InvenLoad()
     {
-
+        //TODO 0310 현재 인벤 정보 넣어주는게 순서가 꼬여서 uimanager에 등록이 안되어있는데
+        // 찾을려고하니 안된다 이거 순서 바꿔주기
         itemList = ItemManager.Instance.itemList;
 
         //itemSlots = UIManager.Instance.inven.itemSlots;
