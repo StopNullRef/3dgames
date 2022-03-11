@@ -279,6 +279,10 @@ public class CharacterController : MonoBehaviour
     IEnumerator ObjectAction()
     {
 
+        var inven = UIManager.Instance.GetUI<InventoryHandler>();
+
+        var poolManager = PoolManager.Instance;
+
         while (true)
         {
             if (state != State.Action)
@@ -290,8 +294,8 @@ public class CharacterController : MonoBehaviour
             objectDestroyTime += Time.deltaTime;
             if (objectDestroyTime > actionEndTime)
             {
-                UIManager.Instance.inven.AddItem(objectTarget.transform.parent.GetComponent<ObjInfo>());
-                PoolManager.Instance.PoolListAdd(objectTarget);
+                inven.AddItem(objectTarget.transform.parent.GetComponent<ObjInfo>());
+                poolManager.PoolListAdd(objectTarget);
                 foreach (var anim in animTransitions)
                 {
                     _anim.SetBool(anim, false);

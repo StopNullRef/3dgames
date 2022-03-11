@@ -62,6 +62,7 @@ public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDra
         invenRect = transform.GetComponent<RectTransform>();
         mover ??= transform.parent.GetComponentInChildren<UIMover>();
         itemManager = ItemManager.Instance;
+        DataManager.Instance.InvenLoad();
     }
 
     /// <summary>

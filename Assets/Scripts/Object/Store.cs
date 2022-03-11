@@ -35,12 +35,12 @@ namespace Project.Object
             coll ??= GetComponent<Collider>();
         }
 
-        //TODO 03/10 여기 유저와 상호작용해서 구현하기
-
-
         //현재 유저와 상호작용인지 체크하는함수
         private void CheckInteraction()
         {
+            var hits = Physics.OverlapBox(transform.position, coll.bounds.extents / 2, Quaternion.identity,1<<LayerMask.NameToLayer("Player"));
+            //TODO 0312 여기서부터 구현하기
+
 
         }
 
