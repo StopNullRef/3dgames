@@ -9,12 +9,7 @@ using System;
 
 public class UIManager : Singleton<UIManager>
 {
-    public GameObject invenUI; // 인벤토리 UI
-    public GameObject invenMover; // 인벤토리 옮겨주는 부분
-
-    public SceneDropDown dropdown; // 드롭다운 받아줄거
-
-    public InvenPopUp invenPopUp; // 인벤토리 팝업 UI
+    //public SceneDropDown dropdown; // 드롭다운 받아줄거
 
     /// <summary>
     /// 현재 열려 있는 모든 UI들을 담을 리스트
@@ -32,30 +27,19 @@ public class UIManager : Singleton<UIManager>
     private Dictionary<string, UIBase> totalUIDict = new Dictionary<string, UIBase>();
 
     /// <summary>
-    /// 업데이트를 돌려줄 UI리스트
-    /// </summary>
-    private List<UIBase> updateUIList = new List<UIBase>();
-
-    /// <summary>
     /// 인벤토리 컴포넌트
     /// </summary>
     public InventoryHandler inven;
 
     private void Start()
     {
-        dropdown = GetUI<SceneDropDown>();
+        //dropdown = GetUI<SceneDropDown>();
     }
 
-    public void Update()
+    private void Update()
     {
-
-        if (updateUIList.Count > 0)
-        {
-            foreach (var ui in updateUIList)
-            {
-                ui.OnUpate();
-            }
-        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+            GetEscCloseUI()?.Close();
     }
 
 
@@ -63,6 +47,9 @@ public class UIManager : Singleton<UIManager>
     {
         if (GameObject.FindObjectOfType<Canvas>() == null)
             GameObject.Instantiate<Canvas>(Resources.Load<Canvas>("Prefabs/InGameUICanvas.prefab"), null, false);
+
+        RemoveAllOpenUI();
+        RemoveUIInfo();
     }
 
     /// <summary>
@@ -131,16 +118,6 @@ public class UIManager : Singleton<UIManager>
 
     }
 
-    public void RigistUpdate(UIBase ui)
-    {
-        var type = ui.GetType().Name;
-        // 같은타입이 없다면 등록 있다면 이미있으므로 return
-        if (updateUIList.Find(_ => _.GetType().Name == type) == null)
-            updateUIList.Add(ui);
-        else
-            return;
-    }
-
     /// <summary>
     /// 열려있는 UI리스트 등록해주는 함수
     /// </summary>
@@ -158,6 +135,24 @@ public class UIManager : Singleton<UIManager>
     {
         if (totalOpenUIList.Contains(ui))
             totalOpenUIList.Remove(ui);
+    }
+
+    /// <summary>
+    /// 열려있는 UI리스트를 전부 초기화 시키는함수
+    /// </summary>
+    public void RemoveAllOpenUI()
+    {
+        totalOpenUIList.Clear();
+    }
+
+    /// <summary>
+    /// uidictionary 와 uiList 정보를
+    /// 전부 지워주는 함수
+    /// </summary>
+    public void RemoveUIInfo()
+    {
+        totalUIDict.Clear();
+        totalUIList.Clear();
     }
 
 
@@ -197,16 +192,30 @@ public class UIManager : Singleton<UIManager>
     /// <returns></returns>
     public UIBase GetTopOpenUI()
     {
-        UIBase result = null;
 
-        for (int i = totalOpenUIList.Count - 1; i <= 0; i--)
+        for (int i = totalOpenUIList.Count - 1; i >= 0; i--)
         {
-            if (totalOpenUIList != null)
-            {
-                result = totalOpenUIList[i];
-            }
+            if (totalOpenUIList[i] != null)
+                return totalOpenUIList[i];
         }
 
-        return result;
+        return null;
     }
+
+    /// <summary>
+    /// 열려있는  ui중에서 제일 위에있으며
+    /// esc로 닫을수 있는 ui를 찾아주는 함수
+    /// </summary>
+    /// <returns></returns>
+    public UIBase GetEscCloseUI()
+    {
+        for (int i = totalOpenUIList.Count - 1; i >= 0; i--)
+        {
+            if (totalOpenUIList[i] != null && (totalOpenUIList[i].isEscClose == true))
+                return totalOpenUIList[i];
+        }
+
+        return null;
+    }
+
 }

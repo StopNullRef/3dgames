@@ -11,6 +11,10 @@ namespace Project.DB
     {
         public SDStore sdStore;
 
+        /// <summary>
+        /// 유저와 상호작용중인지 체크하는 불타입변수
+        /// </summary>
+        public bool interaction;
 
         public BoStore(SDStore sdStore)
         {

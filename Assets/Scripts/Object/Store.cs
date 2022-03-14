@@ -18,6 +18,8 @@ namespace Project.Object
 
         private Collider coll;
 
+        public UIStore uiStore;
+
         /// <summary>
         /// 유저와 상호작용인지 체크하는 불타입 변수
         /// </summary>
@@ -33,15 +35,26 @@ namespace Project.Object
             transform.eulerAngles = new Vector3(stagePos[3], stagePos[4], stagePos[5]);
 
             coll ??= GetComponent<Collider>();
+            uiStore ??= UIManager.Instance.GetUI<UIStore>();
         }
 
         //현재 유저와 상호작용인지 체크하는함수
         private void CheckInteraction()
         {
-            var hits = Physics.OverlapBox(transform.position, coll.bounds.extents / 2, Quaternion.identity,1<<LayerMask.NameToLayer("Player"));
-            //TODO 0312 여기서부터 구현하기
+            var hits = Physics.OverlapBox(transform.position, coll.bounds.extents / 2, Quaternion.identity, 1 << LayerMask.NameToLayer("Player"));
 
-
+            // 여기에 들어왔다는것은 유저가 store 상호작용 가능 범위를 벗어났거나
+            // 들어오지 않았다는것
+            if (hits.Length < 1)
+            {
+                boStore.interaction = false;
+                uiStore.Close();
+            }
+            // 위조건이 아니라면 창을 열어준다
+            else
+            {
+                OnStore();
+            }
         }
 
         /// <summary>
@@ -49,9 +62,17 @@ namespace Project.Object
         /// </summary>
         public void OnStore()
         {
-            var storeUI = UIManager.Instance.GetUI<UIStore>();
+            //npc가 유저와 상호작용중이 아니며 E키를 눌렀을때
+            if ((!boStore.interaction) && Input.GetKeyDown(KeyCode.E))
+            {
+                uiStore.Initialize(boStore);
 
-            storeUI.Initialize(this);
+                boStore.interaction = true;
+
+                uiStore.Open();
+            }
+
+
         }
     }
 }

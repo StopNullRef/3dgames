@@ -116,10 +116,9 @@ public class CameraController : MonoBehaviour
         KeyDictRegist(KeyCode.Escape, () =>
         {
             if (cameraState == CameraState.Build)
-            {
                 IngameManager.Instance.canCusorChange = true;
-
-            }
+            else
+                return;
 
             cameraState = CameraState.None;
 

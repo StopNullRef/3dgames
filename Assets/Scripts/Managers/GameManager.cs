@@ -8,9 +8,9 @@ public class GameManager : Singleton<GameManager>
 {
     public bool isBuilding = false;
 
-    InputManager inputEvent = new InputManager();
+    static InputManager inputEvent = new InputManager();
 
-    public InputManager InputEvent { get => inputEvent; set => inputEvent = value; }
+    public static InputManager InputEvent { get => inputEvent; set => inputEvent = value; }
 
     Func<UnityEngine.SceneManagement.Scene, UnityEngine.SceneManagement.LoadSceneMode> sceneInit;
 
@@ -19,7 +19,7 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     [SerializeField]
     private StaticDataModule sd = new StaticDataModule();
-    public StaticDataModule SD => Instance.sd;
+    public static StaticDataModule SD => Instance.sd;
 
     protected override void Awake()
     {

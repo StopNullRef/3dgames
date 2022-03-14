@@ -32,9 +32,9 @@ namespace Project.UI
         public bool isOpen;
 
         /// <summary>
-        /// 업데이트를 돌려줄지아닌지 체크하는 변수
+        /// esc키로 ui창을 닫는 것이 가능한지 체크하는 불타입 변수
         /// </summary>
-        public bool isUpate;
+        public bool isEscClose;
 
         public Define.UIType type = Define.UIType.None;
 
@@ -52,8 +52,6 @@ namespace Project.UI
         {
             UIManager.Instance.RegistUI(this);
 
-            if (isUpate)
-                UIManager.Instance.RigistUpdate(this);
 
             if (isOpen)
                 Open(true);
@@ -102,7 +100,7 @@ namespace Project.UI
         /// 캔버스 그룹내 요소들을 설정해주는 함수
         /// </summary>
         /// <param name="isActive"></param>
-        private void SetCanvasGroup(bool isActive)
+        protected void SetCanvasGroup(bool isActive)
         {
             Group.alpha = Convert.ToInt32(isActive);
 

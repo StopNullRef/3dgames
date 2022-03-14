@@ -18,24 +18,41 @@ public class UIMover : UIBase, IDragHandler, IBeginDragHandler
     // Start is called before the first frame update
     public override void Start()
     {
-        //isUpate = true;
-        //isOpen = false;
-        base.Start();
+        UIInit();
         holder = transform.parent.gameObject;
         originPos = holder.transform.position;
     }
 
-    public override void OnUpate()
+    public override void UIInit()
     {
-        if(Input.GetKeyDown(KeyCode.I))
+        if (isOpen)
+            Open(true);
+        else
+            Close(true);
+    }
+
+    public override void Open(bool initialValue = false)
+    {
+        // mover에서는 ui창 열때 매니저에 등록하지 않음
+
+        // UIManager에 등록후 열어주기
+        if (!isOpen || initialValue)
         {
-            if (isOpen)
-                Close();
-            else
-                Open();
+            isOpen = true;
+            SetCanvasGroup(true);
         }
     }
 
+    public override void Close(bool intialValue = false)
+    {
+        // mover에서는 ui창 닫을 때 매니저에 등록하지 않음
+
+        if (isOpen || intialValue)
+        {
+            isOpen = false;
+            SetCanvasGroup(false);
+        }
+    }
 
     // 인벤토리가 꺼졋다가 켜졌을때 위치를 다시 제대로 처음위치로 돌아가게해주는 함수
     void SetOriginPosInven()

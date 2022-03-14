@@ -54,7 +54,7 @@ public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDra
 
     public override void Start()
     {
-        base.isUpate = true;
+        base.isEscClose = true;
         base.isOpen = false;
         base.Start();
         originTempSlotPos = tempSlotImage.transform.localPosition;
@@ -63,6 +63,12 @@ public class InventoryHandler : UIBase, IBeginDragHandler, IDragHandler, IEndDra
         mover ??= transform.parent.GetComponentInChildren<UIMover>();
         itemManager = ItemManager.Instance;
         DataManager.Instance.InvenLoad();
+
+    }
+
+    public void Update()
+    {
+        OnUpate();
     }
 
     /// <summary>

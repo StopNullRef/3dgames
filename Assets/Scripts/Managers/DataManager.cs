@@ -40,9 +40,6 @@ public class DataManager : Singleton<DataManager>
     private void Start()
     {
         itemSlots = UIManager.Instance.GetUI<InventoryHandler>().itemSlots;
-        //UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= InvenDataPass;
-        //UnityEngine.SceneManagement.SceneManager.activeSceneChanged += InvenDataPass;
-
     }
 
     /// <summary>

@@ -22,7 +22,12 @@ public class InputManager
     /// <param name="inputEventMethod"></param>
     public void InputEventRigist(KeyCode keyCode, Action inputEventMethod)
     {
-        inputEventDict.Add(keyCode, inputEventMethod);
+        // 게임매니저에서 관리하는 입력클래스에 이미 등록된게 있으면
+        // return시켜줌
+        if (inputEventDict.ContainsKey(keyCode))
+            return;
+        else
+            inputEventDict.Add(keyCode, inputEventMethod);
     }
 
     /// <summary>

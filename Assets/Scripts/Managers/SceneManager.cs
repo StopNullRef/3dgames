@@ -66,10 +66,8 @@ public class SceneManager : Singleton<SceneManager>
         // 씬 바뀔때 체크 해주고 넣어주는 부분
 
         if (sceneName != Define.Scene.LoadingScene)
-        {
             map = GameObject.Find("Maps").transform.GetChild(0);
-            UIManager.Instance.GetUI<SceneDropDown>().dropdown.value = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex - 1;
-        }
+
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SpawnStore;
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SpawnStore;
     }
@@ -79,12 +77,11 @@ public class SceneManager : Singleton<SceneManager>
     /// </summary>
     public void SpawnStore(Scene current,Scene next)
     {
-        var sdStores = GameManager.Instance.SD.sdStores.Where(_ => _.sceneRef == sceneName).ToList();
+        var sdStores = GameManager.SD.sdStores.Where(_ => _.sceneRef == sceneName).ToList();
 
         if (sdStores == null)
             return;
 
-        Debug.Log("상점 스폰");
         var resourceManager = ResourceManager.Instance;
 
         npcHolder ??= new GameObject("NPCHolder").transform;

@@ -25,9 +25,6 @@ public class SceneDropDown : UIBase, IPointerEnterHandler, IPointerExitHandler
         dropdown.options.Clear();
         dropdown.captionText.text = "맵 이동";
 
-        // 해당 열거형  안에있는 갯수 구하는거
-        //System.Enum.GetValues(typeof(Define.Scene)).Length;
-
         // 씬 열거형의 갯수 만큼 드롭다운에 옵션을 생성하고 옵션에 이름 넣어주는 부분
         for (int i = 1; i < System.Enum.GetValues(typeof(Define.Scene)).Length; i++)
         {

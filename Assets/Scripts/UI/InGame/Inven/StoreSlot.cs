@@ -30,12 +30,15 @@ namespace Project.UI
 
         BoBuilditem saleItem;
 
-        public void Initilaize(BoBuilditem buildItem)
+        public void Initialize(BoBuilditem buildItem)
         {
-            //TODO 구현하기
-
+            //TODO 03/14 구현하기
+            //현재 이코드자체가 작동하시않음
+            // store에 uistore가 들어가지않음 
             // 아이템
             // 인덱스 아이템이름 리소스 패스 0,1 0 아이콘 1 프리팹오브젝트위치 cost 재료 아이템, 갯수
+
+            Debug.Log("StoreSlotInitil");
 
             saleItem = buildItem;
             SetSlot(buildItem);
@@ -57,6 +60,7 @@ namespace Project.UI
 
         public void SetSlot(BoBuilditem buildItem)
         {
+            Debug.Log("SetStoreSlot");
             var sdItem = buildItem.sdBuildItem;
 
             var resourceManager = ResourceManager.Instance;

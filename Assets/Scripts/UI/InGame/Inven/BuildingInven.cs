@@ -56,7 +56,9 @@ namespace Project.Inven
                 currentSelectSlot = (BuildingInvenSlot)slotList[0];
 
 
-            GameManager.Instance.InputEvent.InputEventRigist(KeyCode.Tab, () => SelectSlot());
+            var inputEvent = GameManager.InputEvent;
+
+            GameManager.InputEvent.InputEventRigist(KeyCode.Tab, () => SelectSlot());
 
             contentOrginPos = contentPos = contentRect.anchoredPosition;
 
