@@ -25,6 +25,11 @@ namespace Project.Object
         /// </summary>
         public bool isInteraction;
 
+        public void Start()
+        {
+            
+        }
+
         public void Initialize(BoStore boStore)
         {
             this.boStore = boStore;
@@ -38,22 +43,27 @@ namespace Project.Object
             uiStore ??= UIManager.Instance.GetUI<UIStore>();
         }
 
+        public void OnUpdate()
+        {
+            CheckInteraction();
+        }
+
         //현재 유저와 상호작용인지 체크하는함수
         private void CheckInteraction()
         {
-            var hits = Physics.OverlapBox(transform.position, coll.bounds.extents / 2, Quaternion.identity, 1 << LayerMask.NameToLayer("Player"));
+            var hits = Physics.OverlapBox(transform.position, coll.bounds.extents, Quaternion.identity, 1 << LayerMask.NameToLayer("Player"));
 
             // 여기에 들어왔다는것은 유저가 store 상호작용 가능 범위를 벗어났거나
             // 들어오지 않았다는것
             if (hits.Length < 1)
             {
                 boStore.interaction = false;
-                uiStore.Close();
+                uiStore?.Close();
             }
             // 위조건이 아니라면 창을 열어준다
             else
             {
-                OnStore();
+               OnStore();
             }
         }
 
@@ -65,14 +75,14 @@ namespace Project.Object
             //npc가 유저와 상호작용중이 아니며 E키를 눌렀을때
             if ((!boStore.interaction) && Input.GetKeyDown(KeyCode.E))
             {
+                uiStore ??= UIManager.Instance.GetUI<UIStore>();
+
                 uiStore.Initialize(boStore);
 
                 boStore.interaction = true;
 
                 uiStore.Open();
             }
-
-
         }
     }
 }

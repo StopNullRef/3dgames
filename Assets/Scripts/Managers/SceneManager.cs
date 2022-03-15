@@ -45,9 +45,13 @@ public class SceneManager : Singleton<SceneManager>
         }
     }
 
-    public void OnUpdate()
+    public void Update()
     {
-
+        if (stores.Count > 0)
+        {
+            foreach (var store in stores)
+                store.OnUpdate();
+        }
     }
 
     public void Clear()
@@ -75,7 +79,7 @@ public class SceneManager : Singleton<SceneManager>
     /// <summary>
     /// 상점npc생성해주는 함수
     /// </summary>
-    public void SpawnStore(Scene current,Scene next)
+    public void SpawnStore(Scene current, Scene next)
     {
         var sdStores = GameManager.SD.sdStores.Where(_ => _.sceneRef == sceneName).ToList();
 
@@ -86,11 +90,8 @@ public class SceneManager : Singleton<SceneManager>
 
         npcHolder ??= new GameObject("NPCHolder").transform;
 
-
-
         for (int i = 0; i < sdStores.Count; i++)
         {
- 
             var storeObj = Instantiate(resourceManager.ReourceLoad<GameObject>(sdStores[i].resourcePath), npcHolder);
 
             var store = storeObj.GetComponent<Store>();
@@ -99,7 +100,6 @@ public class SceneManager : Singleton<SceneManager>
 
             stores.Add(store);
         }
-
     }
 
 

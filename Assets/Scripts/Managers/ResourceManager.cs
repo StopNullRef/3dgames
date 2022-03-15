@@ -1,3 +1,4 @@
+using Project.UI;
 using Project.Util;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +6,20 @@ using UnityEngine;
 
 public class ResourceManager : Singleton<ResourceManager>
 {
+    public void Start()
+    {
+        Initialize();
+    }
+
+    private void Initialize()
+    {
+        LoadAllPrefabs();
+    }
+
+    private void LoadAllPrefabs()
+    {
+        LoadPoolableObject<StoreSlot>("Prefabs/UI/SaleSlot",10);
+    }
 
     public T ReourceLoad<T>(string path) where T : UnityEngine.Object
     {
