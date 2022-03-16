@@ -17,7 +17,7 @@ public class ItemSlot : MonoBehaviour
 
     public Color itemNoView;
 
-    
+
 
     private void OnEnable()
     {
@@ -90,7 +90,7 @@ public class ItemSlot : MonoBehaviour
     /// </summary>
     /// <param name="addItem"></param>
     /// <param name="dropCount"></param>
-    public void SlotInitialize(ObjInfo addItem,int dropCount)
+    public void SlotInitialize(ObjInfo addItem, int dropCount)
     {
         this.itemInfo = addItem.ItemDrop;
         this.itemCount = dropCount;
@@ -100,6 +100,30 @@ public class ItemSlot : MonoBehaviour
     public void SlotInitialize(int dropCount)
     {
         this.itemCount += dropCount;
+    }
+
+    /// <summary>
+    /// 아이템 갯수 차감하는 함수
+    /// </summary>
+    /// <param name="count">뺄 갯수</param>
+    public void DeductItemCount(int count, out int remain)
+    {
+        // itemCount >= count ? itemCount -= count : remain = count - itemCount;
+        remain = itemCount >= count ? 0 : count - itemCount;
+
+        if (remain == 0)
+            // 여기에 들어왔다는 것은
+            // 현재 슬롯이 가지고 있는 아이템 갯수가 
+            // 차감해야 되는 아이템 갯수보다 크다는 것
+            itemCount -= count;
+        else
+            itemCount = 0;
+
+        //아이템 갯수를 다뺏는데 갯수가 0이면 슬롯이 비어있으므로 지워주기
+        if (itemCount == 0)
+            itemInfo = ItemManager.Instance.itemList[(int)Define.ScriptableItem.None];
+
+        SlotRefresh();
     }
 
 }

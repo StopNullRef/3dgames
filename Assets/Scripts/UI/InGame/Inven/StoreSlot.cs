@@ -1,16 +1,18 @@
 ﻿using Project.DB;
 using Project.Util;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Project.UI
 {
-    public class StoreSlot : MonoBehaviour, IPoolableObject
+    public class StoreSlot : MonoBehaviour, IPoolableObject, IPointerEnterHandler
     {
         // TODO 03/14 버튼클릭으로 구현하지 말고
         // 마우스가 해당 범위안에 들어왔을때
@@ -122,5 +124,79 @@ namespace Project.UI
                 haveText.text = $"<color=#ff0000ff>{text}</color>";
 
         }
+
+        /// <summary>
+        /// 마우스 위치에 해당 UI가 있을때 들어오는 이벤트 함수
+        /// </summary>
+        /// <param name="eventData"></param>
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            // 0 좌 1 중앙 2 우
+            if (Input.GetMouseButtonDown(0))
+            {
+                BuyOne();
+            }
+            else if (Input.GetMouseButtonDown(1))
+            {
+                BuyMany();
+            }
+        }
+
+
+        /// <summary>
+        /// 한번만 구매할때 작동하는 함수
+        /// </summary>
+        private void BuyOne()
+        {
+            if (IsBuy())
+            {
+                // 구매가 가능하다면 바로 구매되게끔
+
+
+            }
+            else
+            {
+                // 불가능하다면 구매가 불가능하다고 알림창 뜨게하기
+            }
+        }
+
+        /// <summary>
+        /// 여러개 구매할때 작동하는 함수
+        /// </summary>
+        private void BuyMany()
+        {
+
+        }
+
+
+        /// <summary>
+        /// 아이템 지불하기
+        /// </summary>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        IEnumerator PayItem(int count)
+        {
+
+            var invenSlots = UIManager.Instance.GetUI<InventoryHandler>().itemSlots;
+
+            // itemslot에 cost아이템이있는 슬롯 리스트를 찾고 해당 리스트에서 cost비용 이상으로
+            // cost 0 구매할때 필요한 아이템 코드
+            var haveCostItemSlots = invenSlots.Where(_ => _.itemInfo.itemCode == saleItem.sdBuildItem.cost[0]).ToList();
+
+            // 해당 물건 구매하는 데 필요한 아이템 갯수
+            int costCount = saleItem.sdBuildItem.cost[1];
+
+            //TODO 03/16 슬롯에서 차감하는 함수 써서 작동하게 하기
+
+            while (true)
+            {
+
+
+                yield return null;
+            }
+
+        }
+
     }
 }
+
