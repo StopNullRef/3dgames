@@ -186,10 +186,15 @@ namespace Project.UI
             // 해당 물건 구매하는 데 필요한 아이템 갯수
             int costCount = saleItem.sdBuildItem.cost[1];
 
-            //TODO 03/16 슬롯에서 차감하는 함수 써서 작동하게 하기
+            // 차감된수
+            int deductionCount =0;
 
-            while (true)
+            //TODO 03/16 슬롯에서 차감하는 함수 써서 작동하게 하기
+            while (count != deductionCount)
             {
+                //var haveSlot = haveCostItemSlots.
+
+
 
 
                 yield return null;
