@@ -1,3 +1,4 @@
+using Project.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Project.Inven
 {
-    public class InvenBase : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class InvenBase : UIBase, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
 
         /// <summary>

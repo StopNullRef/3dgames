@@ -35,10 +35,13 @@ namespace Project.Inven
         /// </summary>
         public RectTransform viewport;
 
+        public List<BuildingInvenSlot> invenSlots = new List<BuildingInvenSlot>();
+
         private const float contentMoveDistance = 125f;
 
-        void Start()
+        public override void Start()
         {
+            base.Start();
             Initialize();
         }
 
@@ -226,6 +229,16 @@ namespace Project.Inven
         public void OnPointerEnter(PointerEventData eventData)
         {
             SetMaskable();
+        }
+
+        /// <summary>
+        /// 인벤에 아이템을 추가해주는 함수
+        /// </summary>
+        /// <param name="buildItem"></param>
+        public void AddBuildItem(SDBuildItem buildItem)
+        {
+            //TODO 03/21 여기 아이템 add해주는 거 구현
+            // buildinginvenslotonoff하는거 보면 객체 활성화 비활성화임 그거 고치기
         }
     }
 }

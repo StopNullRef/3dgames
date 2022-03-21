@@ -14,11 +14,7 @@ namespace Project.UI
 {
     public class StoreSlot : MonoBehaviour, IPoolableObject, IPointerEnterHandler
     {
-        // TODO 03/14 버튼클릭으로 구현하지 말고
-        // 마우스가 해당 범위안에 들어왔을때
-        // 마우스 우클릭이냐 좌클릭이냐 에따라 다르게 처리
-        // ex) 좌클릭시 한번만 구매 우클릭이 임이의 창이 떠서 몇개 구매할건지 입력후 구매
-        // homeScene현재 발판 위치 안맞는거 수정
+        // TODO 
         // 마우스 커서 포인트 위치 안맞는거 수정
         // 상점 UI를 WorldUICanvas 만들어서 따로 작동하게끔 바꿔야됨
 
@@ -111,6 +107,22 @@ namespace Project.UI
         }
 
         /// <summary>
+        /// 구매가능한지 체크해주는 함수
+        /// </summary>
+        /// <param name="count">구매할 아이템 갯수</param>
+        /// <returns></returns>
+        bool IsBuy(int count)
+        {
+            var haveItemCount = HavenItem();
+            var costItemCount = Convert.ToInt32(costText.text) * count;
+
+            if (haveItemCount > costItemCount)
+                return true;
+
+            return false;
+        }
+
+        /// <summary>
         /// 가지고 있는 갯수 텍스트의 색을 바꿔주는 함수
         /// </summary>
         void SetHaveCostColor(string text)
@@ -151,12 +163,13 @@ namespace Project.UI
             if (IsBuy())
             {
                 // 구매가 가능하다면 바로 구매되게끔
-
+                PayItem(saleItem.sdBuildItem.cost[1]);
 
             }
             else
             {
                 // 불가능하다면 구매가 불가능하다고 알림창 뜨게하기
+                Debug.Log("아이템 구매를 할수 없습니다");
             }
         }
 
@@ -174,7 +187,7 @@ namespace Project.UI
         /// </summary>
         /// <param name="count"></param>
         /// <returns></returns>
-        IEnumerator PayItem(int count)
+        void PayItem(int count)
         {
 
             var invenSlots = UIManager.Instance.GetUI<InventoryHandler>().itemSlots;
@@ -186,20 +199,25 @@ namespace Project.UI
             // 해당 물건 구매하는 데 필요한 아이템 갯수
             int costCount = saleItem.sdBuildItem.cost[1];
 
-            // 차감된수
-            int deductionCount =0;
+            var remain = haveCostItemSlots[0].DeductItemCount(count);
 
-            //TODO 03/16 슬롯에서 차감하는 함수 써서 작동하게 하기
-            while (count != deductionCount)
+            // remain이 0이라는 것은 첫 슬롯에 차감할수 있는 만큼
+            // 가지고있어서 더이상 찾을 필요가 없음
+            if (remain == 0)
+                return;
+
+            for (int i = 1; i < haveCostItemSlots.Count; i++)
             {
-                //var haveSlot = haveCostItemSlots.
+                remain = haveCostItemSlots[i].DeductItemCount(remain);
 
-
-
-
-                yield return null;
+                if (remain == 0)
+                    break;
             }
 
+
+
+
+            // TODO 03/21 buildingInven에서 item Add해주는거 함수 만들어서 넣기
         }
 
     }

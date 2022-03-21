@@ -106,8 +106,11 @@ public class ItemSlot : MonoBehaviour
     /// 아이템 갯수 차감하는 함수
     /// </summary>
     /// <param name="count">뺄 갯수</param>
-    public void DeductItemCount(int count, out int remain)
+    public int DeductItemCount(int count)
     {
+        // return 하는 remain은 해당 슬롯에서 빼야 되는데 갯수가 부족할 경우
+        // 남은 수가 몇개인지 반환해줌
+        int remain = 0;
         // itemCount >= count ? itemCount -= count : remain = count - itemCount;
         remain = itemCount >= count ? 0 : count - itemCount;
 
@@ -124,6 +127,7 @@ public class ItemSlot : MonoBehaviour
             itemInfo = ItemManager.Instance.itemList[(int)Define.ScriptableItem.None];
 
         SlotRefresh();
+        return remain;
     }
 
 }
