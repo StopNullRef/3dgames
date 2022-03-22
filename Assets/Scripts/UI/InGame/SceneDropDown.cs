@@ -64,4 +64,13 @@ public class SceneDropDown : UIBase, IPointerEnterHandler, IPointerExitHandler
         ((IPointerExitHandler)dropdown).OnPointerExit(eventData);
         IngameManager.Instance.canCusorChange = false;
     }
+
+    public override void Close(bool intialValue = false)
+    {
+        base.Close(intialValue);
+    }
+    public override void Open(bool initialValue = false)
+    {
+        base.Open(initialValue);
+    }
 }

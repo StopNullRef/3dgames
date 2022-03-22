@@ -25,11 +25,6 @@ namespace Project.Object
         /// </summary>
         public bool isInteraction;
 
-        public void Start()
-        {
-            
-        }
-
         public void Initialize(BoStore boStore)
         {
             this.boStore = boStore;

@@ -26,7 +26,7 @@ public class BuildingInvenButton : UIBase
     /// 현재 인벤토리로 작업중인지??
     /// 켜져있는지
     /// </summary>
-    bool isOpening = false;
+    public bool isOpening = false;
 
     /// <summary>
     /// 화살표 이미지 ↑ 모양으로
@@ -39,10 +39,13 @@ public class BuildingInvenButton : UIBase
     /// </summary>
     Transform invenHolder;
 
+    public Vector3 orginPos = new Vector3();
+
     public override void Start()
     {
         base.Start();
         Initialize();
+        orginPos = invenHolder.transform.position;
     }
 
     /// <summary>
@@ -64,7 +67,7 @@ public class BuildingInvenButton : UIBase
     /// 인벤토리를 움직여줄 함수
     /// </summary>
     /// <param name="isOpening">인벤이 활성화되어잇는지 아닌지 체크하는 불타입변수</param>
-    void InvenMove()
+    public void InvenMove()
     {
         if (!isOpening)
         {
@@ -81,5 +84,16 @@ public class BuildingInvenButton : UIBase
             invenHolder.transform.localPosition.z);
         }
     }
+
+    /// <summary>
+    /// TODO 03/22 이함수 적용하기 
+    /// </summary>
+    public void SetOriginPos()
+    {
+        isOpening = false;
+        arrow.rotation = arrowRot;
+        invenHolder.transform.localPosition = orginPos;
+    }
+
 
 }

@@ -1,9 +1,10 @@
+using Project.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ToolUI : MonoBehaviour
+public class ToolUI : UIBase
 {
     Color originColor; // 처음 선택 안될때 배경 컬러
     Color selectColor; // 선택 될때 바꿔줄 배경 컬러
@@ -13,8 +14,10 @@ public class ToolUI : MonoBehaviour
     public Dictionary<Define.Tool, Image> toolSlotIcons = new Dictionary<Define.Tool, Image>();
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
+        isOpen = true;
+        base.Start();
         originColor = new Color(255, 255, 255); // 흰색
         selectColor = new Color(0, 255, 0);     // 초록색
 

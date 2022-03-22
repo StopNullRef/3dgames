@@ -31,6 +31,8 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     public InventoryHandler inven;
 
+    public List<UIBase> beforeOpenUIList = new List<UIBase>();
+
     private void Start()
     {
         //dropdown = GetUI<SceneDropDown>();
@@ -57,6 +59,8 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     public void CameraStateToSetCanvas(Define.CameraState cameraState)
     {
+        beforeOpenUIList ??= totalOpenUIList;
+
         // 처음에 모든 ui를 꺼준다
         foreach (var ui in totalUIList)
             ui.Close();
@@ -69,9 +73,12 @@ public class UIManager : Singleton<UIManager>
                     ui.Open();
                 break;
             case Define.CameraState.None:
-                List<UIBase> noneUI = totalUIList.Where(_ => _.type == Define.UIType.None).ToList();
-                foreach (var ui in noneUI)
+
+                    UIManager.Instance.GetUI<BuildingInvenButton>().InvenMove();
+                foreach (var ui in beforeOpenUIList)
+                {
                     ui.Open();
+                }
                 break;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Project.DB;
+using Project.Inven;
 using Project.Util;
 using System;
 using System.Collections;
@@ -12,7 +13,7 @@ using UnityEngine.UI;
 
 namespace Project.UI
 {
-    public class StoreSlot : MonoBehaviour, IPoolableObject, IPointerEnterHandler
+    public class StoreSlot : MonoBehaviour, IPoolableObject, IPointerClickHandler
     {
         // TODO 
         // 마우스 커서 포인트 위치 안맞는거 수정
@@ -137,22 +138,6 @@ namespace Project.UI
 
         }
 
-        /// <summary>
-        /// 마우스 위치에 해당 UI가 있을때 들어오는 이벤트 함수
-        /// </summary>
-        /// <param name="eventData"></param>
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            // 0 좌 1 중앙 2 우
-            if (Input.GetMouseButtonDown(0))
-            {
-                BuyOne();
-            }
-            else if (Input.GetMouseButtonDown(1))
-            {
-                BuyMany();
-            }
-        }
 
 
         /// <summary>
@@ -164,6 +149,7 @@ namespace Project.UI
             {
                 // 구매가 가능하다면 바로 구매되게끔
                 PayItem(saleItem.sdBuildItem.cost[1]);
+                //saleItem.sdBuildItem.cost[1]
 
             }
             else
@@ -189,7 +175,6 @@ namespace Project.UI
         /// <returns></returns>
         void PayItem(int count)
         {
-
             var invenSlots = UIManager.Instance.GetUI<InventoryHandler>().itemSlots;
 
             // itemslot에 cost아이템이있는 슬롯 리스트를 찾고 해당 리스트에서 cost비용 이상으로
@@ -204,7 +189,10 @@ namespace Project.UI
             // remain이 0이라는 것은 첫 슬롯에 차감할수 있는 만큼
             // 가지고있어서 더이상 찾을 필요가 없음
             if (remain == 0)
+            {
+                UIManager.Instance.GetUI<BuildingInven>().AddBuildItem(saleItem.sdBuildItem, 1);
                 return;
+            }
 
             for (int i = 1; i < haveCostItemSlots.Count; i++)
             {
@@ -213,13 +201,16 @@ namespace Project.UI
                 if (remain == 0)
                     break;
             }
-
-
-
+            UIManager.Instance.GetUI<BuildingInven>().AddBuildItem(saleItem.sdBuildItem, 1);
 
             // TODO 03/21 buildingInven에서 item Add해주는거 함수 만들어서 넣기
         }
 
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            BuyOne();
+            SlotRefresh();
+        }
     }
 }
 

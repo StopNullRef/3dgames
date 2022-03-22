@@ -101,5 +101,15 @@ namespace Project.Inven
             beginDragSlot = null;
             endDragSlot = null;
         }
+
+        public override void Open(bool initialValue = false)
+        {
+            base.Open(initialValue);
+        }
+
+        public override void Close(bool intialValue = false)
+        {
+            base.Close(intialValue);
+        }
     }
 }

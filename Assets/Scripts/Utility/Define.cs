@@ -194,6 +194,7 @@ namespace Define
     {
         None,
         Building,
+        Ingame,
     }
 
 }

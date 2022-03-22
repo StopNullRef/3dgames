@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,9 @@ public class BuildingInvenSlot : SlotBase
     /// </summary>
     public GameObject selectImage;
 
+    [SerializeField]
+    public SDBuildItem sd;
+
 
     /// <summary>
     /// SelectImage를 해당 slot의 불타입변수를 이용해
@@ -20,6 +24,19 @@ public class BuildingInvenSlot : SlotBase
     public void SelectImageOnOff()
     {
         selectImage.SetActive(isSelect);
+    }
+
+    public void AddItem(SDBuildItem sd, int count)
+    {
+        this.sd = sd;
+        this.count += count;
+        SlotRefresh();
+    }
+
+    public void SlotRefresh()
+    {
+        itemIconImage.sprite = Resources.Load<Sprite>(sd.resourcePath[0]);
+        itemCountText.text = count.ToString();
     }
 
 }
