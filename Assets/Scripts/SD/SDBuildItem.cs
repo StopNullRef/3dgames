@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[SerializeField]
+[System.Serializable]
 public class SDBuildItem : StaticDataBase
 {
     /*    건축아이템 sddata

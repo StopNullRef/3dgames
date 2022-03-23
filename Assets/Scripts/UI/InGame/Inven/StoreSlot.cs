@@ -79,7 +79,6 @@ namespace Project.UI
         // 유저가 보유한 아이템갯수를 리턴해주는 함수
         int HavenItem()
         {
-            //TODO 03/15 현재 제대로 못찾음
             var sdItem = saleItem.sdBuildItem;
             var inven = UIManager.Instance.GetUI<InventoryHandler>();
             var haveCostItem = inven.itemSlots.Where(_ => _.itemInfo.itemCode == sdItem.cost[0]).ToList();
@@ -146,17 +145,12 @@ namespace Project.UI
         private void BuyOne()
         {
             if (IsBuy())
-            {
                 // 구매가 가능하다면 바로 구매되게끔
                 PayItem(saleItem.sdBuildItem.cost[1]);
-                //saleItem.sdBuildItem.cost[1]
-
-            }
+            
             else
-            {
                 // 불가능하다면 구매가 불가능하다고 알림창 뜨게하기
                 Debug.Log("아이템 구매를 할수 없습니다");
-            }
         }
 
         /// <summary>

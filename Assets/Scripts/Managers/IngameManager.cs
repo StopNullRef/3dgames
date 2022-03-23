@@ -15,6 +15,8 @@ public class IngameManager : Singleton<IngameManager>
     /// </summary>
     Texture2D treeCursor;
 
+    public Sprite buildingInvenSlot;
+
     /// <summary>
     /// 커서를 바꿀수 있는지 아닌지 체크하는 불타입 변수
     /// </summary>
@@ -29,6 +31,8 @@ public class IngameManager : Singleton<IngameManager>
 
         treeCursor = Resources.Load<Texture2D>(Define.ResourcePath.treeCursor);
         treeCursor.alphaIsTransparency = true;
+
+        buildingInvenSlot = Resources.Load<Sprite>("Prefabs/ToIcon/Fence");
 
         Init();
     }
