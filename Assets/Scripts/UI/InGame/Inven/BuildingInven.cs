@@ -39,7 +39,6 @@ namespace Project.Inven
 
         public override void Start()
         {
-            //TODO 03/23 현재 씬변경시 tab키가 먹지않음
             base.Start();
             Initialize();
         }
@@ -63,6 +62,7 @@ namespace Project.Inven
 
             //선택된 슬롯을 찾는다
             var selectSlot = slotList.Where(_ => _.isSelect == true).SingleOrDefault();
+
             // 만약 없을 경우 제일 처음에 있는 슬롯을 선택된 슬롯을 설정
             if (selectSlot == null)
                 slotList[0].isSelect = true;
@@ -97,6 +97,9 @@ namespace Project.Inven
         {
             var selectSlot = slotList.Where(_ => _.isSelect == true).SingleOrDefault();
             selectSlot.isSelect = false;
+
+            //selectSlot 이 널이다??
+
             // 슬롯이 마지막 번호라면 다시 처음 인벤슬롯을 선택시켜준다
             // 인덱스 값을 기준으로 하므로 listCount에 1을 빼준다
             if (selectSlot.transform.GetSiblingIndex() == slotList.Count - 1)
@@ -155,7 +158,7 @@ namespace Project.Inven
         {
             var invenButton = UIManager.Instance.GetUI<BuildingInvenButton>();
 
-            //invenButton.InvenMove();
+            invenButton.SetOriginPos();
             //base.Close(intialValue);
         }
 

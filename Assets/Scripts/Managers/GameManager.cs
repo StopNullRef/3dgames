@@ -7,7 +7,7 @@ using Project.SD;
 public class GameManager : Singleton<GameManager>
 {
     public bool isBuilding = false;
-
+    
     static InputManager inputEvent = new InputManager();
 
     public static InputManager InputEvent { get => inputEvent; set => inputEvent = value; }

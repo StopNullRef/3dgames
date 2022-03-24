@@ -92,7 +92,7 @@ public class BuildingInvenButton : UIBase
     {
         isOpening = false;
         arrow.rotation = arrowRot;
-        invenHolder.transform.localPosition = orginPos;
+        invenHolder.transform.position = orginPos;
     }
 
 
