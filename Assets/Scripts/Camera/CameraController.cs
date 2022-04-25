@@ -1,4 +1,5 @@
 using Define;
+using Project.Inven;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -106,11 +107,16 @@ public class CameraController : MonoBehaviour
 
         KeyDictRegist(KeyCode.F1, () =>
         {
-            cameraState = CameraState.Build; 
+            cameraState = CameraState.Build;
 
-            IngameManager.Instance.canCusorChange = false;
+            var ingame = IngameManager.Instance;
 
-            UIManager.Instance.CameraStateToSetCanvas(cameraState);
+            ingame.canCusorChange = false;
+
+            var uiManager = UIManager.Instance;
+            uiManager.CameraStateToSetCanvas(cameraState);
+            ingame.BuildingSystem.Initialize();
+            //uiManager.GetUI<BuildingInven>().BuildPoolRigist();
         });
 
         KeyDictRegist(KeyCode.Escape, () =>

@@ -30,7 +30,7 @@
     "name": "House",
     "resourcePath": [
       "Prefabs/ToIcon/Baker_house",
-      "Prefabs/BuildObject/Baker_house",
+      "Prefabs/BuildObject/House",
       "Texture/ItemIcon/Material/WoodenPlank"
     ],
     "cost": [

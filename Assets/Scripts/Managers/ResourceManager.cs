@@ -18,7 +18,7 @@ public class ResourceManager : Singleton<ResourceManager>
 
     private void LoadAllPrefabs()
     {
-        LoadPoolableObject<StoreSlot>("Prefabs/UI/SaleSlot",10);
+        LoadPoolableObject<StoreSlot>("Prefabs/UI/SaleSlot", 10);
     }
 
     public T ReourceLoad<T>(string path) where T : UnityEngine.Object
@@ -27,11 +27,25 @@ public class ResourceManager : Singleton<ResourceManager>
         return Resources.Load<T>(path);
     }
 
-    public void LoadPoolableObject<T>(string path,int count = 1) where T : MonoBehaviour, IPoolableObject
+    /// <summary>
+    /// 오브젝트풀링을 사용하는 객체
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="path"></param>
+    /// <param name="count"></param>
+    public void LoadPoolableObject<T>(string path, int count = 1) where T : MonoBehaviour, IPoolableObject
     {
+        if (count == 0)
+            return;
         var obj = Resources.Load<GameObject>(path);
+        if (obj == null)
+            Debug.Log("obj == null");
+
 
         var tComponent = obj.GetComponent<T>();
+
+        tComponent.PoolInit();
+        
 
         PoolManager.Instance.PoolDictRigist<T>(tComponent, count);
     }

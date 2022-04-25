@@ -48,7 +48,7 @@ public class UIManager : Singleton<UIManager>
     public void SceneChangeInit(Scene scene, LoadSceneMode mod)
     {
         if (GameObject.FindObjectOfType<Canvas>() == null)
-            GameObject.Instantiate<Canvas>(Resources.Load<Canvas>("Prefabs/InGameUICanvas.prefab"), null, false);
+            GameObject.Instantiate<Canvas>(Resources.Load<Canvas>("Prefabs/InGameUICanvas"), null, false);
 
         RemoveAllOpenUI();
         RemoveUIInfo();
@@ -59,25 +59,37 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     public void CameraStateToSetCanvas(Define.CameraState cameraState)
     {
-        beforeOpenUIList ??= totalOpenUIList;
+        // buildinginven 슬롯 이미지 초기화했는데 안뜸 백그라운드 이미지만 보임 이거 보이게 고치기
 
-        // 처음에 모든 ui를 꺼준다
-        foreach (var ui in totalUIList)
+
+        //카메라 상태에 따라 UI를 켰다가 꺼줄 것임으로 카메라 상태가 다시 돌아왔을때 다시 켜줄 리스트를 만듦
+        if (beforeOpenUIList.Count < 1)
+            beforeOpenUIList = totalUIList.Where(_ => _.isOpen == true && _.type != Define.UIType.Building).ToList();
+
+        // 모든 열려있는 ui를 꺼준다
+        foreach (var ui in beforeOpenUIList)
             ui.Close();
 
+        // 건축에 필요한 UI들을 UIManager에서 찾아서 가져온다
+        List<UIBase> buildUI = totalUIList.Where(_ => _.type == Define.UIType.Building).ToList();
         switch (cameraState)
         {
+            //카메라가 build상태일때 UIManager에 접근하여 buildingUI를 가지고 와 열어준다
             case Define.CameraState.Build:
-                List<UIBase> buildUI = totalUIList.Where(_ => _.type == Define.UIType.Building).ToList();
-                foreach (var ui in buildUI)
-                    ui.Open();
+                {
+                    foreach (var ui in buildUI)
+                        ui.Open();
+                }
                 break;
             case Define.CameraState.None:
-
-                    UIManager.Instance.GetUI<BuildingInvenButton>().InvenMove();
-                foreach (var ui in beforeOpenUIList)
                 {
-                    ui.Open();
+                    // 카메라가 빌드 상태가 아닐때는 buildingUI들을 전부 꺼준다
+                    foreach (var ui in buildUI)
+                        ui.Close();
+                    // 그전에 열려있던 UI들을 다시 켜줌
+                    foreach (var ui in beforeOpenUIList)
+                        ui.Open();
+                    beforeOpenUIList.Clear();
                 }
                 break;
         }

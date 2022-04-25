@@ -36,15 +36,35 @@ public class UIStore : UIBase
         var sdStore = boStore.sdStore;
 
         var sd = GameManager.SD;
+        // 무조건 추가 생성 초기화 가 아닌 현재 가지고있는거 체크 하고 나머지만큼 생성밑 초기화 시키기
+        // 다시 초기화 할때 버그생김
 
-        for (int i = 0; i < sdStore.saleItem.Length; i++)
-            storeSlots.Add(poolManager.GetPool<StoreSlot>().GetObject());
+        // 내가 필요한 슬롯 카운트를 센다
+        var needSlotCount = boStore.sdStore.saleItem.Length - storeSlots.Count;
+
+        // 0 보다 클경우 내가 풀에서 가져와서 추가해준다
+        if (needSlotCount > 0)
+        {
+            for (int i = 0; i < needSlotCount; i++)
+                storeSlots.Add(poolManager.GetPool<StoreSlot>().GetObject());
+        }
+        else if (needSlotCount < 0)
+        {
+            //0 보다 작은경우 storeSlots 이 상점 판매 목록 보다 크므로 풀에 다시 넣어준다
+            needSlotCount = Mathf.Abs(needSlotCount);
+
+            for (int i = needSlotCount; i <= 0; i--)
+            {
+                storeSlots.RemoveAt(i);
+                poolManager.GetPool<StoreSlot>().PoolReturn(storeSlots[i]);
+            }
+        }
 
         for (int j = 0; j < sdStore.saleItem.Length; j++)
         {
             storeSlots[j].transform.SetParent(content);
             storeSlots[j].gameObject.SetActive(true);
-            storeSlots[j].Initialize(new BoBuilditem(sd.sdBuildItems.Where(_ => _.index == sdStore.saleItem[j]).SingleOrDefault()));
+            storeSlots[j].Initialize(new BoBuildItem(sd.sdBuildItems.Where(_ => _.index == sdStore.saleItem[j]).SingleOrDefault()));
         }
     }
 
@@ -68,8 +88,21 @@ public class UIStore : UIBase
 
         uiManager.GetUI<InventoryHandler>()?.Close();
 
+        var pool = PoolManager.Instance.GetPool<StoreSlot>();
+
+        // 닫을 때 슬롯을 상점 판매 목록을 다시 리턴 시켜줌
+
+
         mover.Close();
         base.Close(intialValue);
+        if (storeSlots.Count != 0)
+        {
+            for (int i = storeSlots.Count - 1; i <= 0; i--)
+            {
+                pool.PoolReturn(storeSlots[i]);
+                storeSlots.RemoveAt(i);
+            }
+        }
     }
 
 }

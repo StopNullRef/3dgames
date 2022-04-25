@@ -38,7 +38,7 @@ public class SlotBase : MonoBehaviour
     /// <summary>
     /// 아이템 갯수
     /// </summary>
-    protected float count;
+    public float count;
 
     /// <summary>
     /// 슬롯이미지를 설정해주는 함수
@@ -61,7 +61,7 @@ public class SlotBase : MonoBehaviour
 
     public float Count
     {
-        get => Count;
+        get => count;
         set
         {
             count = value;

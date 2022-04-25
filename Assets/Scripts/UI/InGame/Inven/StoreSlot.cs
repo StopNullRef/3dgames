@@ -1,5 +1,6 @@
 ﻿using Project.DB;
 using Project.Inven;
+using Project.Object;
 using Project.Util;
 using System;
 using System.Collections;
@@ -15,9 +16,6 @@ namespace Project.UI
 {
     public class StoreSlot : MonoBehaviour, IPoolableObject, IPointerClickHandler
     {
-        // TODO 
-        // 마우스 커서 포인트 위치 안맞는거 수정
-        // 상점 UI를 WorldUICanvas 만들어서 따로 작동하게끔 바꿔야됨
 
         public Image saleImage;
         public Text saleItemName;
@@ -30,9 +28,9 @@ namespace Project.UI
 
         public bool CanRecycle { get; set; }
 
-        BoBuilditem saleItem;
+        BoBuildItem saleItem;
 
-        public void Initialize(BoBuilditem buildItem)
+        public void Initialize(BoBuildItem buildItem)
         {
             saleItem = buildItem;
             SetSlot(buildItem);
@@ -44,17 +42,19 @@ namespace Project.UI
 
             var resourceManager = ResourceManager.Instance;
 
-            saleImage = resourceManager.ReourceLoad<Image>(sdItem.resourcePath[0]);
+            saleImage.sprite = resourceManager.ReourceLoad<Sprite>(sdItem.resourcePath[0]);
             saleItemName.text = sdItem.name;
 
+            // Image x Sprite로 넣어야된다 Image 위치 초기화 됨
             // 재료 이미지를 어디서 가지고있나? 해당 정보 넣어주기
-            costImage = resourceManager.ReourceLoad<Image>(sdItem.resourcePath[2]);
+            costImage.sprite = resourceManager.ReourceLoad<Sprite>(sdItem.resourcePath[2]);
             costText.text = sdItem.cost[1].ToString();
             SetHaveCostColor(HavenItem().ToString());
         }
 
-        public void SetSlot(BoBuilditem buildItem)
+        public void SetSlot(BoBuildItem buildItem)
         {
+
             var sdItem = buildItem.sdBuildItem;
 
             var resourceManager = ResourceManager.Instance;
@@ -62,6 +62,14 @@ namespace Project.UI
             var inven = UIManager.Instance.GetUI<InventoryHandler>();
 
             var sprite = Resources.Load<Sprite>(sdItem.resourcePath[0]);
+
+            if(saleImage == null)
+            {
+                Debug.Log("판매아이템 이미지 널");
+
+
+
+            }
 
             saleImage.sprite = sprite;
             saleItemName.text = sdItem.name;
@@ -187,7 +195,6 @@ namespace Project.UI
                 UIManager.Instance.GetUI<BuildingInven>().AddBuildItem(saleItem.sdBuildItem, 1);
                 return;
             }
-
             for (int i = 1; i < haveCostItemSlots.Count; i++)
             {
                 remain = haveCostItemSlots[i].DeductItemCount(remain);
@@ -197,13 +204,17 @@ namespace Project.UI
             }
             UIManager.Instance.GetUI<BuildingInven>().AddBuildItem(saleItem.sdBuildItem, 1);
 
-            // TODO 03/21 buildingInven에서 item Add해주는거 함수 만들어서 넣기
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             BuyOne();
             SlotRefresh();
+        }
+
+        public void PoolInit()
+        {
+
         }
     }
 }

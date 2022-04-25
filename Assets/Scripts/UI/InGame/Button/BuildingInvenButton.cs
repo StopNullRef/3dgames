@@ -69,6 +69,7 @@ public class BuildingInvenButton : UIBase
     /// <param name="isOpening">인벤이 활성화되어잇는지 아닌지 체크하는 불타입변수</param>
     public void InvenMove()
     {
+        // 닫혀있다면
         if (!isOpening)
         {
             isOpening = !isOpening;
@@ -78,6 +79,7 @@ public class BuildingInvenButton : UIBase
         }
         else
         {
+            // 열려있다면
             isOpening = !isOpening;
             arrow.rotation = arrowRot;
             invenHolder.transform.localPosition = new Vector3(invenHolder.transform.localPosition.x, invenHolder.transform.localPosition.y - (invenBackGround.rect.height),
@@ -85,13 +87,15 @@ public class BuildingInvenButton : UIBase
         }
     }
 
+
     /// <summary>
-    /// TODO 03/22 이함수 적용하기 
+    /// buildinginvenslot을 원래 자리로 내려주는 함수
     /// </summary>
     public void SetOriginPos()
     {
         isOpening = false;
         arrow.rotation = arrowRot;
+
         invenHolder.transform.position = orginPos;
     }
 

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace Project.DB
 {
     [Serializable]
-    public class BoBuilditem
+    public class BoBuildItem
     {
         public SDBuildItem sdBuildItem;
 
-        public BoBuilditem(SDBuildItem buildItem)
+        public BoBuildItem(SDBuildItem buildItem)
         {
             this.sdBuildItem = buildItem;
         }

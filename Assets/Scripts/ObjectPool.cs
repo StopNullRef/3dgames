@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Project.Util;
+using Project.SD;
+using System.Linq;
+using Project.Object;
 
 public class ObjectPool<T> where T : MonoBehaviour, IPoolableObject
 {
@@ -65,4 +68,21 @@ public class ObjectPool<T> where T : MonoBehaviour, IPoolableObject
 
         return obj;
     }
+
+    public GameObject GetObject(SDBuildItem buildItem)
+    {
+        // 풀에서 구별할수 있는 방법??
+        // 내가 가지고있는거 staticdata를 들고있음
+        // 건물 별로 각각 다른 풀을 갖게한다?
+        // 건물 안에 스태틱 데이터가 있는데 그거를 기준으로 꺼내야되는데..
+        var result = Pool.Where(_ => _.name == buildItem.name).FirstOrDefault();
+        result.CanRecycle = false;
+
+        if (result == null)
+            return null;
+
+
+        return result.gameObject;
+    }
+
 }

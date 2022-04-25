@@ -17,6 +17,11 @@ public class SDBuildItem : StaticDataBase
     [SerializeField]
     public string name;
 
+    /// <summary>
+    ///0 판매하는 실제 아이템 아이콘
+    // 1 판매되는 아이템 실제 프리팹 객체
+    // 2 구매할수있는 재료 아이템 아이콘
+    /// </summary>
     [SerializeField]
     public string[] resourcePath;
     [SerializeField]

@@ -124,8 +124,10 @@ public class PoolManager : Singleton<PoolManager>
         // 풀홀더가 null이라면 생성해서 넣어준다
         if(pool.poolHolder == null)
         {
-            pool.poolHolder = new GameObject { name = $"{key}Holder" }.transform;
+            pool.poolHolder = new GameObject { name = $"{key.Name}Holder" }.transform;
             pool.poolHolder.parent = transform;
+
+
             pool.poolHolder.position = Vector3.zero;
         }
 

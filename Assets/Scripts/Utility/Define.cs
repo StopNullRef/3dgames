@@ -38,6 +38,7 @@ namespace Define
         Grass,
     }
 
+
     /// <summary>
     /// 리소스 참조해올 리소스 경로를 담고 있는 클래스
     /// </summary>
@@ -195,6 +196,13 @@ namespace Define
         None,
         Building,
         Ingame,
+    }
+
+    public enum ColorType
+    {
+        Invisible, // 안보이게
+        Translucent, // 반투명
+        Visible,  // 보이게
     }
 
 }

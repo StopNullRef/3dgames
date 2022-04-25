@@ -13,7 +13,7 @@ namespace Project.Inven
         /// <summary>
         /// 해당 인벤에 모든 슬롯을 가지고 있는 리스트
         /// </summary>
-        public List<SlotBase> slotList = new List<SlotBase>();
+        public List<SlotBase> slots = new List<SlotBase>();
 
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Project.Inven
 
         protected virtual void SlotRefresh()
         {
-            foreach (var slot in slotList)
+            foreach (var slot in slots)
                 slot.SetSlotImage();
         }
 

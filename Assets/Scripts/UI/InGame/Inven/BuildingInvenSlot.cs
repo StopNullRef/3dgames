@@ -52,4 +52,23 @@ public class BuildingInvenSlot : SlotBase
         itemCountText.text = count.ToString();
     }
 
+    /// <summary>
+    // 아이콘 이미지 알파값 1로 만들어주는 함수
+    /// </summary>
+    public void IconImageOn()
+    {
+        itemIconImage.color = new Color(itemIconImage.color.r, itemIconImage.color.g, itemIconImage.color.b, 1);
+    }
+
+    /// <summary>
+    /// 현재 슬롯이 아이템을 가지고 있는지 아닌지 반환하는 함수
+    /// </summary>
+    /// <returns></returns>
+    public bool IsHaveItem()
+    {
+        if (sd != null && count != 0)
+            return true;
+
+        return false;
+    }
 }

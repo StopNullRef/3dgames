@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,6 +37,7 @@ public class SceneDropDown : UIBase, IPointerEnterHandler, IPointerExitHandler
         dropdown.onValueChanged.AddListener((int i) => 
         {
             i = dropdown.value;
+            SceneManager.Instance.stores.Clear();
             DataManager.Instance.InvenSave();
 
             //드롭다운을 통해 씬이동을 해주는데 선택된 부분이 같을경우 씬을 이동시켜주지 않는다
