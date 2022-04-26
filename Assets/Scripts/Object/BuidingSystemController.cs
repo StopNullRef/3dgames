@@ -27,14 +27,11 @@ public class BuidingSystemController : MonoBehaviour
         BuildingInvenSlot selectSlot = invenSlots.Find(_ => _.isSelect == true) as BuildingInvenSlot;
 
         // sd 정보가 있다면 해당 건물 생성
-        if(selectSlot.sd.index != 0)
+        if (selectSlot.sd.index != 0)
         {
             CreateObject(selectSlot);
         }
-
-        // TODO 건물 생성은 잘되나 알파값이 0.5f가 안들어감
-
-        //CreateObject((BuildingInvenSlot)invenSlots[0]);
+        //TODO 04/26 현재 건물까지 잘만들어짐 그 이후에 건물 밑에 collcheck타일 생성후 적용 시키기
     }
 
     /// <summary>
@@ -99,10 +96,10 @@ public class BuidingSystemController : MonoBehaviour
 
     public void OnUpdate()
     {
-        if (currentSelectObject == null)
+
+        if (currentSelectObject != null)
         {
-            // UIManager에서 받아서 매개변수 넣고 돌리게끔
-            // CreateObject()
+            BuildingMove();
         }
 
     }
@@ -113,11 +110,7 @@ public class BuidingSystemController : MonoBehaviour
     /// <param name="sdData"></param>
     public void CreateObject(BuildingInvenSlot slot)
     {
-        if (currentSelectObject != null || slot.sd.name == null)
-        {
-            RemoveObject();
-        }
-
+        // 이전에 있던 건물 지워주고 만듦
         var obj = PoolManager.Instance.GetPool<BuildItem>().GetObject(slot.sd);
         // 활성화 비활성화 ??? 말고 알파값을 조정한다?????
         obj.transform.SetParent(buildingHolder);
@@ -129,8 +122,12 @@ public class BuidingSystemController : MonoBehaviour
 
     public void RemoveObject()
     {
-        PoolManager.Instance.GetPool<BuildItem>().PoolReturn(currentSelectObject.GetComponent<BuildItem>());
-        currentSelectObject = null;
+        var item = currentSelectObject?.GetComponent<BuildItem>();
+
+        if (item != null)
+            PoolManager.Instance.GetPool<BuildItem>().PoolReturn(item);
+
+        //currentSelectObject = null;
     }
 
     public void Build(GameObject go)
@@ -143,10 +140,10 @@ public class BuidingSystemController : MonoBehaviour
     /// </summary>
     private void BuildingMove()
     {
-        if (currentSelectObject != null)
+        // 마우승 안따라옴 
+        RaycastHit hit;
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000f,1 << LayerMask.NameToLayer("Ground")))
         {
-            RaycastHit hit;
-            Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit);
             currentSelectObject.transform.position = hit.point;
         }
     }
@@ -166,9 +163,10 @@ public class BuidingSystemController : MonoBehaviour
 
         foreach (var color in render)
         {
+            Debug.Log(color.gameObject.name);
             colors.Add(color.material.color);
         }
-
+        // fence는 하나만 바뀜
         switch (colorType)
         {
             case Define.ColorType.Invisible:
@@ -188,7 +186,50 @@ public class BuidingSystemController : MonoBehaviour
         {
             for (int i = 0; i < render.Length; i++)
             {
-                render[i].material.color = new Color(colors[i].r, colors[i].g, colors[i].b, i);
+                render[i].material.color = new Color(colors[i].r, colors[i].g, colors[i].b, alpha);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Grid Building System을 위해 collider체크를 하기 위한
+    /// Rect 범위를 반환해주는 함수
+    /// </summary>
+    /// <param name="meshRenderer">한면의 rect 범위를 반환할 meshRenderer</param>
+    /// <returns>meshRenderer를 이용해 한면의 사각범위를 반환</returns>
+    public  Rect MakeRectRange(MeshRenderer meshRenderer)
+    {
+        Rect r = new Rect(0, 0, meshRenderer.bounds.size.x, meshRenderer.bounds.size.y);
+        return r;
+    }
+
+    /// <summary>
+    /// ColliderCheckPlane을 생성시켜주는 함수
+    /// </summary>
+    /// <param name="buildingObject">지을 건물</param>
+    /// <param name="colliderCheckPlane">체크할  plane 바닥</param>
+    /// <param name="buildingPos">건물을 지을 위치</param>
+    public  void PlaneInstantiate(GameObject buildingObject, GameObject colliderCheckPlane, Vector3 buildingPos)
+    {
+        // 사각 plane의 사각 범위를 받아서
+        Rect colcheckRect = MakeRectRange(colliderCheckPlane.GetComponent<MeshRenderer>());
+
+        //스케일 맞춰주고
+        colliderCheckPlane.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+
+        float startX = colcheckRect.xMin;
+        float endX = colcheckRect.xMin + colcheckRect.width;
+
+        float startY = colcheckRect.yMin;
+        float endY = colcheckRect.yMin + colcheckRect.height;
+
+        for (float i = startX; i < colcheckRect.width; i += endX)
+        {
+            for (float j = startY; j < colcheckRect.height; j += endY)
+            {
+                //TODO 04/26 인스탄티에이트 말구 pool에서 가져오게끔 만들기
+                Vector3 planePos = new Vector3(buildingObject.transform.position.x + i, buildingObject.GetComponent<MeshRenderer>().bounds.min.y + 0.01f, buildingObject.transform.position.z + j);
+                MonoBehaviour.Instantiate(colliderCheckPlane, planePos, Quaternion.identity, buildingObject.transform);
             }
         }
     }

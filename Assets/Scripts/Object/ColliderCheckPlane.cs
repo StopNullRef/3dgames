@@ -1,8 +1,9 @@
+using Project.Util;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ColliderCheckPlane : MonoBehaviour
+public class ColliderCheckPlane : MonoBehaviour, IPoolableObject
 {
     /// <summary>
     /// 해당 plane의 meshRenderer를 받을 변수
@@ -23,6 +24,8 @@ public class ColliderCheckPlane : MonoBehaviour
     }
 
     public ColliderCheckObject buildObjectColor;
+
+    public bool CanRecycle { get ; set; }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -49,4 +52,8 @@ public class ColliderCheckPlane : MonoBehaviour
         this.canCurrentBuilding = buildingable;
     }
 
+    public void PoolInit()
+    {
+        throw new System.NotImplementedException();
+    }
 }

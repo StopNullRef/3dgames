@@ -28,7 +28,9 @@ public class IngameManager : Singleton<IngameManager>
     //TODO 04/21 현재 건축모드 처음 들어갔을때 건물 생성안됨 생성 되게끔해주기
 
     static BuidingSystemController buildingSystem = new BuidingSystemController();
+
     public BuidingSystemController BuildingSystem { get => buildingSystem; }
+
 
     protected override void Awake()
     {
@@ -57,6 +59,7 @@ public class IngameManager : Singleton<IngameManager>
     public void Update()
     {
         ChangeCursor();
+        buildingSystem.OnUpdate();
     }
 
     public void Clear()

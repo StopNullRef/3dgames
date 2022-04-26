@@ -19,6 +19,7 @@ public class ResourceManager : Singleton<ResourceManager>
     private void LoadAllPrefabs()
     {
         LoadPoolableObject<StoreSlot>("Prefabs/UI/SaleSlot", 10);
+        LoadPoolableObject<ColliderCheckPlane>("Prefabs/BuildObject/ColliderCheckPlane", 10);
     }
 
     public T ReourceLoad<T>(string path) where T : UnityEngine.Object

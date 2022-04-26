@@ -132,18 +132,20 @@ namespace Project.Inven
             void SetSelectSlot(int slotNum)
             {
                 slots[slotNum].isSelect = true;
+                var beforeSelectSlot = currentSelectSlot;
                 currentSelectSlot = (BuildingInvenSlot)slots[slotNum];
+                var ingame = IngameManager.Instance;
 
-                if (currentSelectSlot.sd.index == 0)
+                // 현재 선택된 슬롯이 비어있지 않다면 슬롯에 있는 건물을 생성시켜줌
+                if(currentSelectSlot.sd.index != 0)
                 {
-                    IngameManager.Instance.BuildingSystem.RemoveObject();
-                    // TODO 0425 해야될것
-
-                    // 현재 안되는거 슬롯에서 tab키 눌렀을때 있다가 없는거면 제거가 됨 하지만 slot.sd =null 에서 slot.sd = null 로 가면 nullref뜸
+                    ingame.BuildingSystem.RemoveObject();
+                    ingame.BuildingSystem.CreateObject(currentSelectSlot);
                 }
                 else
                 {
-                    IngameManager.Instance.BuildingSystem.CreateObject(currentSelectSlot);
+                    // 여기에 들어왔다는것은 슬롯이 비어있단것이므로 현재 게임에 있는 건물을 다시 pool에 넣어줌
+                    ingame.BuildingSystem.RemoveObject();
                 }
             }
         }
