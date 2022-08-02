@@ -43,8 +43,12 @@ public class ResourceManager : Singleton<ResourceManager>
             Debug.Log("obj == null");
 
 
-        var tComponent = obj.GetComponent<T>();
-
+        //var tComponent = obj.GetComponent<T>() == null ? obj.GetComponentInChildren<T>() : obj.GetComponent<T>();
+        var tComponent = obj.GetComponentInChildren<T>();
+        //if(tComponent == null)
+        //{
+        //    tComponent = obj.GetComponentInChildren<T>();
+        //}
         tComponent.PoolInit();
         
 

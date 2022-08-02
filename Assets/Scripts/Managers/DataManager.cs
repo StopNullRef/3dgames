@@ -39,7 +39,7 @@ public class DataManager : Singleton<DataManager>
 
     private void Start()
     {
-        itemSlots = UIManager.Instance.GetUI<InventoryHandler>().itemSlots;
+        //itemSlots = UIManager.Instance.GetUI<InventoryHandler>().itemSlots;
     }
 
     /// <summary>

@@ -59,7 +59,7 @@ public class SlotBase : MonoBehaviour
 
     }
 
-    public float Count
+    public virtual float Count
     {
         get => count;
         set

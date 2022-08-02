@@ -41,7 +41,7 @@ public class SceneManager : Singleton<SceneManager>
         {
             map = GameObject.Find("Maps").transform.GetChild(0);
             ObjectGiveTagandLayer(Define.TagName.Tree, 10);
-            ObjectGiveTagandLayer(Define.TagName.Grass, 11);
+            ObjectGiveTagandLayer(Define.TagName.Grass, LayerMask.NameToLayer("Ground"));
         }
     }
 
@@ -74,6 +74,7 @@ public class SceneManager : Singleton<SceneManager>
 
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SpawnStore;
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SpawnStore;
+
     }
 
     /// <summary>
@@ -81,6 +82,10 @@ public class SceneManager : Singleton<SceneManager>
     /// </summary>
     public void SpawnStore(Scene current, Scene next)
     {
+        // 씬을 변경할때 무조건 spawn을 시킴 없으면 반복문이 안돌아가서 스폰이 안되는데
+        // 그전에 씬에 있던 store의 정보가 있으면 비워줌
+        stores.Clear();
+
         var sdStores = GameManager.SD.sdStores.Where(_ => _.sceneRef == sceneName).ToList();
 
         if (sdStores == null)

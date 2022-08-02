@@ -33,7 +33,11 @@ public class BuildingInvenSlot : SlotBase
         return 0;
     }
 
-
+    /// <summary>
+    /// sd데이터를 슬롯에 추가하는 함수
+    /// </summary>
+    /// <param name="sd">추가할 StaticData</param>
+    /// <param name="count">추가할 아이템의 갯수</param>
     public void AddItem(SDBuildItem sd, int count)
     {
         this.sd = sd;
@@ -41,15 +45,37 @@ public class BuildingInvenSlot : SlotBase
         SlotRefresh();
     }
 
+    /// <summary>
+    /// 아이템 슬롯에 있는 정보에 따라 이미지와 
+    /// 아이템 갯수 text를 UI에 설정해주는 함수 
+    /// </summary>
     public void SlotRefresh()
     {
-        if(sd.index == 0)
+        if (sd == null || sd.index == 0)
         {
+            // 여기에 들어왔다는것은 해당 슬롯에 아이템이 비어있다는것
+            // 해당 슬롯에 비어있는 슬롯 이미지를 넣어줌
             itemIconImage.sprite = IngameManager.Instance.buildingInvenSlot;
+            itemCountText.text = count.ToString();
         }
+        else
+        {
+            // 여기에 들어왔다는 것은 해등 슬롯에 아이템이 존재 한다는 것
+            // 해당 아이템 정도에 맞게 슬롯이미지를 넣어줌
+            itemIconImage.sprite = Resources.Load<Sprite>(sd.resourcePath[0]);
+            itemCountText.text = count.ToString();
+        }
+    }
 
-        itemIconImage.sprite = Resources.Load<Sprite>(sd.resourcePath[0]);
-        itemCountText.text = count.ToString();
+    /// <summary>
+    /// 슬롯에 대한 정보를 비워주는 함수
+    /// </summary>
+    private void SlotClear()
+    {
+        // 슬롯에 count가 0일때 아이템이 존재하지 않으므로 해당 슬롯에 대한 SDData를 비워주는 함수
+
+        
+
     }
 
     /// <summary>
@@ -71,4 +97,23 @@ public class BuildingInvenSlot : SlotBase
 
         return false;
     }
+
+    public override float Count
+    {
+        get => base.Count;
+        set
+        {
+            base.Count = value;
+            if (Count == 0)
+            {
+                //TODO 08/01
+                //
+                //
+                //여기 아이템 갯수 0개일때 슬롯 비워주는거 다시 설정하기
+                //this.sd.index = 0;
+                SlotRefresh();
+            }
+        }
+    }
+
 }

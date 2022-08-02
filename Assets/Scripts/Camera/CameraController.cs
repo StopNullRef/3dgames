@@ -105,6 +105,7 @@ public class CameraController : MonoBehaviour
             keyDict.Add(keyCode, action);
         }
 
+        // 건축 상태들어갔을때 해주는 부분
         KeyDictRegist(KeyCode.F1, () =>
         {
             cameraState = CameraState.Build;
@@ -116,9 +117,12 @@ public class CameraController : MonoBehaviour
             var uiManager = UIManager.Instance;
             uiManager.CameraStateToSetCanvas(cameraState);
             ingame.BuildingSystem.Initialize();
+            uiManager.GetUI<BuildingInvenButton>().InvenMove();
+            ingame.BuildingSystem.inven = uiManager.GetUI<BuildingInven>();
             //uiManager.GetUI<BuildingInven>().BuildPoolRigist();
         });
 
+        // 건축에서 일반상태로 돌아올때 작업해주는 부분
         KeyDictRegist(KeyCode.Escape, () =>
         {
             if (cameraState == CameraState.Build)
@@ -127,8 +131,14 @@ public class CameraController : MonoBehaviour
                 return;
 
             cameraState = CameraState.None;
-
-            UIManager.Instance.CameraStateToSetCanvas(cameraState);
+            var uiManager = UIManager.Instance;
+            uiManager.CameraStateToSetCanvas(cameraState);
+            BuildingInvenButton button = uiManager.GetUI<BuildingInvenButton>();
+            // 한번씩 빠르게 누르면 isOpening이 false인 상태로 여기에 들어온다 그래서 강제로 true로 만듦
+            if (button.isOpening == false)
+                button.isOpening = true;
+            button.SetOriginPos();
+            IngameManager.Instance.BuildingSystem.RemoveObject();
         });
 
     }

@@ -48,6 +48,7 @@ namespace Project.Object
         {
             var hits = Physics.OverlapBox(transform.position, coll.bounds.extents, Quaternion.identity, 1 << LayerMask.NameToLayer("Player"));
 
+
             // 여기에 들어왔다는것은 유저가 store 상호작용 가능 범위를 벗어났거나
             // 들어오지 않았다는것
             if (hits.Length < 1)

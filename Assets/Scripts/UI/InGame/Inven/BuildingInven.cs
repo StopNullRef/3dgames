@@ -13,6 +13,7 @@ namespace Project.Inven
     public class BuildingInven : InvenBase
     {
 
+
         /// <summary>
         /// 현재 건물을 지을수 있는지 아닌지 체크하는 함수
         /// </summary>
@@ -123,9 +124,7 @@ namespace Project.Inven
             {
                 SetSelectSlot(selectSlot.transform.GetSiblingIndex() + 1);
                 contentRect.anchoredPosition = new Vector2(contentRect.anchoredPosition.x - contentMoveDistance, contentRect.anchoredPosition.y);
-
             }
-
 
             AllSelectOnOff();
 
@@ -137,11 +136,14 @@ namespace Project.Inven
                 var ingame = IngameManager.Instance;
 
                 // 현재 선택된 슬롯이 비어있지 않다면 슬롯에 있는 건물을 생성시켜줌
-                if(currentSelectSlot.sd.index != 0)
+                if (currentSelectSlot.sd.index != 0 && currentSelectSlot.Count != 0)
                 {
                     ingame.BuildingSystem.RemoveObject();
                     ingame.BuildingSystem.CreateObject(currentSelectSlot);
                 }
+
+
+
                 else
                 {
                     // 여기에 들어왔다는것은 슬롯이 비어있단것이므로 현재 게임에 있는 건물을 다시 pool에 넣어줌
@@ -173,9 +175,20 @@ namespace Project.Inven
 
         public override void Close(bool intialValue = false)
         {
-            var invenButton = UIManager.Instance.GetUI<BuildingInvenButton>();
+            // 일단 버그생겨서 지워둠
 
-            invenButton.SetOriginPos();
+            //var invenButton = UIManager.Instance.GetUI<BuildingInvenButton>();
+
+            // uibase에 의해서 무조건 처음에 start할때 uimanager에서 찾는다
+            // 처음 start할때 찾으면 함수 호출 순서에 따라 못찾을 수도 있다
+            // 어차피 해당 close는 인게임 start이후에 건축 모드에 들어갔을 때 버튼 클릭을 했을때
+            // 일어나는 이벤트임으로 그 시점에서는 invenButton이 null이 아니므로 맨처음에 스타트할때만 작동 안되게끔 null 이면 return시킴
+            //if (invenButton == null)
+            //    return;
+
+            //TODO 현재 현재 F1키 누를때마다 buildingholder 만들어짐 고치기
+
+            //invenButton.SetOriginPos();
             //base.Close(intialValue);
         }
 
@@ -226,7 +239,7 @@ namespace Project.Inven
 
                     // 아이템이 비어져 있는 곳에도 리소스 패스 들어가서 안됨 슬롯 리스트 갯수만큼 하는 것이 아닌 가지고 있을대
                     // 가져오게끔 만들어야됨
-                    resourceManager.LoadPoolableObject<BuildItem>(slot.sd.resourcePath[1], (int)haveItemSlots[i].count);
+                    resourceManager.LoadPoolableObject<BuildItem>(slot.sd.resourcePath[1], (int)haveItemSlots[i].count + 2);
                 }
 
                 itemPool = poolManager.GetPool<BuildItem>();

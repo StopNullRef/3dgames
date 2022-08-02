@@ -25,8 +25,6 @@ public class IngameManager : Singleton<IngameManager>
     /// </summary>
     public bool canCusorChange = false;
 
-    //TODO 04/21 현재 건축모드 처음 들어갔을때 건물 생성안됨 생성 되게끔해주기
-
     static BuidingSystemController buildingSystem = new BuidingSystemController();
 
     public BuidingSystemController BuildingSystem { get => buildingSystem; }
@@ -37,12 +35,12 @@ public class IngameManager : Singleton<IngameManager>
         base.Awake();
 
         basicCursor = Resources.Load<Texture2D>(Define.ResourcePath.basicCursor);
-        basicCursor.alphaIsTransparency = true;
+        //basicCursor.alphaIsTransparency = true;
 
         treeCursor = Resources.Load<Texture2D>(Define.ResourcePath.treeCursor);
-        treeCursor.alphaIsTransparency = true;
+        //treeCursor.alphaIsTransparency = true;
 
-        buildingInvenSlot = Resources.Load<Sprite>("Assets/Resources/Texture/gui_01_bg_03");
+        buildingInvenSlot = Resources.Load<Sprite>("Texture/gui_01_bg_03");
 
         Init();
     }
@@ -59,6 +57,7 @@ public class IngameManager : Singleton<IngameManager>
     public void Update()
     {
         ChangeCursor();
+        // 현재 처음에는 잘생성이되나 마우스 위치 레이 쏜 위치 가 y값이 이상하게 낮게 잡혀서 plane이 안보이는 버그가 있음 이거 고치기
         buildingSystem.OnUpdate();
     }
 

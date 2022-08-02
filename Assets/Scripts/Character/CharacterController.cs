@@ -9,7 +9,7 @@ public class CharacterController : MonoBehaviour
     /// <summary>
     /// 캐릭터 상태
     /// </summary>
-    Define.State state = Define.State.Idle;
+    public Define.State state = Define.State.Idle;
 
     /// <summary>
     /// 캐릭터가 들고있는 도구
@@ -44,7 +44,7 @@ public class CharacterController : MonoBehaviour
     /// <summary>
     /// 도끼    GameObject
     /// </summary>
-    private GameObject axe; 
+    private GameObject axe;
 
     /// <summary>
     /// 곡괭이  GameObject
@@ -53,7 +53,7 @@ public class CharacterController : MonoBehaviour
 
     Tool[] toolArr;
 
-    GameObject objectTarget;
+    public GameObject objectTarget;
     Vector3 objectTargetPos;
 
 
@@ -103,7 +103,7 @@ public class CharacterController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (cameraController.cameraState != Define.CameraState.None)
         {
@@ -144,8 +144,8 @@ public class CharacterController : MonoBehaviour
         if (Input.GetMouseButton(0) || Input.GetKeyDown(KeyCode.G))
         {
             RaycastHit hit;
-
-            Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000f, Define.LayerNum.objLayer);
+            // Define.LayerNum.objLayer
+            Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000f,1<<10);
 
             if (hit.transform?.gameObject == null)
                 return;
@@ -155,6 +155,7 @@ public class CharacterController : MonoBehaviour
 
             objectTarget = hit.transform.gameObject;
             objectTargetPos = objectTarget.transform.position;
+
 
             //캐릭터 위치랑 클릭된 object 랑 거리가 짧으면 바로 action상태로 바꿔줌
             if (Mathf.Approximately((transform.position - objectTarget.transform.position).magnitude, Define.MaxCount.objectToDistance))
@@ -182,17 +183,19 @@ public class CharacterController : MonoBehaviour
                 objectTarget = null;
 
             RaycastHit hit;
-            Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit);
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100f, 1 << LayerMask.NameToLayer("Ground"), QueryTriggerInteraction.Collide))
+            {
 
-            destination = hit.point;
-            destination.y = 0;
 
-            direction = (destination - gameObject.transform.position);
-            direction.y = 0;
+                destination = hit.point;
+                destination.y = hit.point.y;
 
-            _anim.SetBool("IsMoving", true);
+                direction = (destination - gameObject.transform.position);
+                direction.y = hit.point.y;
+                _anim.SetBool("IsMoving", true);
 
-            state = Define.State.Move;
+                state = Define.State.Move;
+            }
         }
 
     }
@@ -229,7 +232,7 @@ public class CharacterController : MonoBehaviour
         else
         {
             characterMove(objectTargetPos);
-            if (distance < 0.5f)
+            if (distance < 1f)
             {
                 state = Define.State.Action;
                 _anim.SetBool("IsMoving", false);
@@ -283,6 +286,10 @@ public class CharacterController : MonoBehaviour
 
         var poolManager = PoolManager.Instance;
 
+        AnimatorStateInfo animationState = _anim.GetCurrentAnimatorStateInfo(0);
+        AnimatorClipInfo[] myAnimatorClip = _anim.GetCurrentAnimatorClipInfo(0);
+        float time = myAnimatorClip[0].clip.length * animationState.normalizedTime;
+        // TODO 0712 현재 여기서 코루틴으로 돌릴것이 아니라 animationEvent 함수로 따로 빼서 애니메이션이 끝날때 템드랍밑 작업을 해주는게 맞을것같다
         while (true)
         {
             if (state != State.Action)
@@ -292,7 +299,8 @@ public class CharacterController : MonoBehaviour
             }
 
             objectDestroyTime += Time.deltaTime;
-            if (objectDestroyTime > actionEndTime)
+            // if (objectDestroyTime > actionEndTime)
+            if (Mathf.Approximately(0.9f, _anim.GetCurrentAnimatorStateInfo(0).normalizedTime))
             {
                 inven.AddItem(objectTarget.transform.parent.GetComponent<ObjInfo>());
                 poolManager.PoolListAdd(objectTarget);
@@ -302,6 +310,8 @@ public class CharacterController : MonoBehaviour
                 }
 
                 objectDestroyTime = 0f;
+
+
                 state = Define.State.Idle;
                 yield break;
             }
