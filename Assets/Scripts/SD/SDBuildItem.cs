@@ -26,5 +26,4 @@ public class SDBuildItem : StaticDataBase
     public string[] resourcePath;
     [SerializeField]
     public int[] cost;
-
 }

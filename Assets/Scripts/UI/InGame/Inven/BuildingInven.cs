@@ -1,3 +1,4 @@
+using Project.DB;
 using Project.Object;
 using System;
 using System.Collections;
@@ -136,7 +137,7 @@ namespace Project.Inven
                 var ingame = IngameManager.Instance;
 
                 // 현재 선택된 슬롯이 비어있지 않다면 슬롯에 있는 건물을 생성시켜줌
-                if (currentSelectSlot.sd.index != 0 && currentSelectSlot.Count != 0)
+                if (currentSelectSlot.bo.sdBuildItem.index != 0 && currentSelectSlot.Count != 0)
                 {
                     ingame.BuildingSystem.RemoveObject();
                     ingame.BuildingSystem.CreateObject(currentSelectSlot);
@@ -162,13 +163,13 @@ namespace Project.Inven
             var slots = base.slots.Cast<BuildingInvenSlot>();    //as List<BuildingInvenSlot>;
 
             // 슬롯중에 같은 아이템을 가지고 있는 슬롯이 있는지 찾는다
-            var slot = slots.Where(_ => _.sd != null && _.sd.index == buildItem.index).FirstOrDefault();
+            var slot = slots.Where(_ => _.bo.sdBuildItem != null && _.bo.sdBuildItem.index == buildItem.index).FirstOrDefault();
 
             // 없는 경우 빈슬롯을 찾는다
             if (slot == null)
-                slot = slots.Where(_ => _.sd.index == 0).FirstOrDefault();
+                slot = slots.Where(_ => _.bo.sdBuildItem.index == 0).FirstOrDefault();
 
-            slot.AddItem(buildItem, count);
+            slot.AddItem(new BoBuildItem(buildItem), count);
 
             slot.SlotRefresh();
         }
@@ -179,14 +180,14 @@ namespace Project.Inven
 
             //var invenButton = UIManager.Instance.GetUI<BuildingInvenButton>();
 
+
+
             // uibase에 의해서 무조건 처음에 start할때 uimanager에서 찾는다
             // 처음 start할때 찾으면 함수 호출 순서에 따라 못찾을 수도 있다
             // 어차피 해당 close는 인게임 start이후에 건축 모드에 들어갔을 때 버튼 클릭을 했을때
             // 일어나는 이벤트임으로 그 시점에서는 invenButton이 null이 아니므로 맨처음에 스타트할때만 작동 안되게끔 null 이면 return시킴
             //if (invenButton == null)
             //    return;
-
-            //TODO 현재 현재 F1키 누를때마다 buildingholder 만들어짐 고치기
 
             //invenButton.SetOriginPos();
             //base.Close(intialValue);
@@ -213,9 +214,6 @@ namespace Project.Inven
 
             // 건물 인벤이 비어있으면 풀에 등록해줄 필요가 없으므로
             // 리턴 시켜준다.
-            // TODO 04/13 여기 리턴시켜주는 조건 수정
-            // 건물은 pool에서 잘있음 이제 짓는거 구현해야됨
-            // 슬롯이 비어있다는걸 어떻게 체크?
             if (!HaveItem())
                 return;
 
@@ -226,11 +224,6 @@ namespace Project.Inven
             // 풀을 만들어주고 각 객체에 초기화를 해줌
             if (itemPool == null)
             {
-                // 로드풀러블 오브젝트로 가져오는데 구별을 어떻게 할것인가..?
-                // 건축물 구별법..
-
-                //RigistPool(slotList.Count);
-
                 for (int i = 0; i < haveItemSlots.Count; i++)
                 {
                     //slotlist가 slotbase 라서 buildinginvenSlot으로 변환 후
@@ -239,7 +232,7 @@ namespace Project.Inven
 
                     // 아이템이 비어져 있는 곳에도 리소스 패스 들어가서 안됨 슬롯 리스트 갯수만큼 하는 것이 아닌 가지고 있을대
                     // 가져오게끔 만들어야됨
-                    resourceManager.LoadPoolableObject<BuildItem>(slot.sd.resourcePath[1], (int)haveItemSlots[i].count + 2);
+                    resourceManager.LoadPoolableObject<BuildItem>(slot.bo.sdBuildItem.resourcePath[1], (int)haveItemSlots[i].count + 2);
                 }
 
                 itemPool = poolManager.GetPool<BuildItem>();
@@ -257,7 +250,7 @@ namespace Project.Inven
                     // 그후 현재 sd정보가 같은 갯수랑 실제 item 가지고 있는 갯수를 비교하여
                     // 그 차이만큼 추가해준다
                     BuildingInvenSlot slot = base.slots[i] as BuildingInvenSlot;
-                    int count = itemPool.Pool.Where(_ => _.boItem.sdBuildItem.index == slot.sd.index).ToList().Count;
+                    int count = itemPool.Pool.Where(_ => _.boItem.sdBuildItem.index == slot.bo.sdBuildItem.index).ToList().Count;
 
                     // 갯수 차이가 0이거나 그보다 작을 경우 추가로 pool에서 등록을 해줄 필요가 없음으로
                     // 리턴 시켜준다
@@ -265,7 +258,7 @@ namespace Project.Inven
                         return;
 
                     //RigistPool(count);
-                    resourceManager.LoadPoolableObject<BuildItem>(slot.sd.resourcePath[1], count);
+                    resourceManager.LoadPoolableObject<BuildItem>(slot.bo.sdBuildItem.resourcePath[1], count);
 
                     PoolInit();
                 }
@@ -301,7 +294,7 @@ namespace Project.Inven
 
                 foreach (BuildingInvenSlot slot in base.slots)
                 {
-                    if (slot.sd.index != 0)
+                    if (slot.bo.sdBuildItem.index != 0)
                         result.Add(slot);
                 }
 

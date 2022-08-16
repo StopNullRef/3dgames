@@ -35,11 +35,11 @@ public class ObjectPool<T> where T : MonoBehaviour, IPoolableObject
     /// <param name="obj"></param>
     public void PoolReturn(T obj)
     {
+        // TODO 08/08여기 수정좀 해야됨
         obj.transform.SetParent(poolHolder);
         obj.CanRecycle = true;
         obj.gameObject.SetActive(false);
     }
-
 
     public T GetObject()
     {
@@ -68,6 +68,7 @@ public class ObjectPool<T> where T : MonoBehaviour, IPoolableObject
 
         return obj;
     }
+
 
     public GameObject GetObject(SDBuildItem buildItem)
     {

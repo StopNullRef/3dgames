@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Project.Object;
 using Project.Inven;
+using System;
+using System.Linq;
 
 public class BuidingSystemController : MonoBehaviour
 {
@@ -30,10 +32,16 @@ public class BuidingSystemController : MonoBehaviour
     /// </summary>
     public BuildingInven inven;
 
+    IngameManager ingame;
+
+    Dictionary<KeyCode, Action> BuildKeyDict = new Dictionary<KeyCode, Action>();
+
     // 건물에 rigidbody가 없어서 그럼 그냥 해당 범위 체크해서 색변환 및 작업한는게 나을것같다
     // rigidbody가 아닌 overlapbox를 이용
     public void Initialize()
     {
+        ingame = IngameManager.Instance;
+
         buildingHolder ??= new GameObject { name = "BuildingHolder" }.transform;
         buildingHolder.transform.position = new Vector3(0, 0, 0);
 
@@ -46,8 +54,10 @@ public class BuidingSystemController : MonoBehaviour
 
         cameraController = Camera.main.transform.GetComponent<CameraController>();
 
+        KeyInitialize();
+
         // sd 정보가 있다면 해당 건물 생성
-        if (selectSlot.sd.index != 0)
+        if (selectSlot.bo.sdBuildItem.index != 0)
             CreateObject(selectSlot);
     }
 
@@ -78,7 +88,7 @@ public class BuidingSystemController : MonoBehaviour
                 if (slot.IsHaveItem())
                 {
                     // 풀에서 현재 슬롯과 같은 아이템을 가지는 리스트를 만듦
-                    var sameItemList = pool.Pool.FindAll(_ => _.boItem.sdBuildItem.index == slot.sd.index);
+                    var sameItemList = pool.Pool.FindAll(_ => _.boItem.sdBuildItem.index == slot.bo.sdBuildItem.index);
 
                     // 해당 풀에 같은 슬롯의 아이템의 갯수
                     var poolCount = sameItemList == null ? 0 : sameItemList.Count;
@@ -87,7 +97,7 @@ public class BuidingSystemController : MonoBehaviour
                     var count = (int)slot.count != poolCount ? slot.count - poolCount : 0;
 
                     //// 추가로 등록해줘야 될만큼만 등록을 해준다
-                    resourceManager.LoadPoolableObject<BuildItem>(slot.sd.resourcePath[1], (int)count);
+                    resourceManager.LoadPoolableObject<BuildItem>(slot.bo.sdBuildItem.resourcePath[1], (int)count);
                 }
             }
         }
@@ -100,7 +110,7 @@ public class BuidingSystemController : MonoBehaviour
             {
                 if (slot.IsHaveItem())
                 {
-                    resourceManager.LoadPoolableObject<BuildItem>(slot.sd.resourcePath[1], (int)slot.Count);
+                    resourceManager.LoadPoolableObject<BuildItem>(slot.bo.sdBuildItem.resourcePath[1], (int)slot.Count);
                 }
             }
         }
@@ -115,6 +125,18 @@ public class BuidingSystemController : MonoBehaviour
             if (Input.GetMouseButtonDown(0) && currentSelectObject.GetComponent<BuildItem>().CheckBuildState())
                 Build();
         }
+
+        if (Input.anyKeyDown)
+        {
+            foreach (var dic in BuildKeyDict)
+            {
+                if (Input.GetKeyDown(dic.Key))
+                {
+                    dic.Value();
+                }
+            }
+        }
+
     }
 
     /// <summary>
@@ -126,7 +148,7 @@ public class BuidingSystemController : MonoBehaviour
         if (slot.count == 0)
             return;
         // 이전에 있던 건물 지워주고 만듦
-        var obj = PoolManager.Instance.GetPool<BuildItem>().GetObject(slot.sd);
+        var obj = PoolManager.Instance.GetPool<BuildItem>().GetObject(slot.bo.sdBuildItem);
         // 활성화 비활성화 ??? 말고 알파값을 조정한다?????
         obj.transform.SetParent(buildingHolder);
         obj.SetActive(true);
@@ -166,7 +188,7 @@ public class BuidingSystemController : MonoBehaviour
         // 건물 layer를 처음에 달아주니 건물 자기자신의 layer도 충돌감지를 해서 안되는 경우가 생김
         // 처음에 layer를 가지고있지 않고 건축완료시 layer를 달아줌
         currentSelectObject.layer = LayerMask.NameToLayer("Obj");
-        
+
         SetAlpha(currentSelectObject, Define.ColorType.Visible);
         currentSelectObject = null;
         Physics.SyncTransforms();
@@ -261,6 +283,20 @@ public class BuidingSystemController : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// 건축 모드일때 카메라 움직여주는 함수
+    /// </summary>
+    private void BuildCameraMove()
+    {
+        // 인게임 매니저에서 건축상태인지 판단하는 불타입 변수를 기준으로
+        // 건축 상태가 아니라면 이함수는 작동하지 않아야됨
+        if (!ingame.isBuilding)
+            return;
+
+
+    }
+
 
     public Rect MakeRectRange(Collider coll)
     {
@@ -378,6 +414,91 @@ public class BuidingSystemController : MonoBehaviour
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// keyDict에 키를 등록하는 함수
+    /// </summary>
+    private void KeyInitialize()
+    {
+        if (BuildKeyDict.Count != 0)
+            return;
+
+        //BuildKeyDict.Add(KeyCode.W,)
+        var camera = Camera.main.transform.gameObject;
+        /// <summary>
+        /// keyDictionary에 등록해주는 함수
+        /// </summary>
+        /// <param name="keyCode">입력 받을 key값</param>
+        /// <param name="action">작동 시켜줄 함수</param>
+        void KeyDictRegist(KeyCode keyCode, Action action)
+        {
+            BuildKeyDict.Add(keyCode, action);
+        }
+
+
+        #region CameraMoveKeyRigist
+        KeyDictRegist(KeyCode.W, () =>
+        {
+            camera.transform.Translate(Vector3.forward, Space.Self);
+        });
+
+        KeyDictRegist(KeyCode.A, () =>
+        {
+            camera.transform.Translate(Vector3.left, Space.Self);
+        });
+
+        KeyDictRegist(KeyCode.S, () =>
+        {
+            camera.transform.Translate(Vector3.back, Space.Self);
+        });
+
+        KeyDictRegist(KeyCode.D, () =>
+        {
+            camera.transform.Translate(Vector3.right, Space.Self);
+        });
+        #endregion
+
+        KeyDictRegist(KeyCode.Q, () =>
+        {
+            // Q키를 누를시 현재 buildingHolder에 건물 이있는지 체크후 없다면 생성시켜줌
+            if (buildingHolder.childCount != 0)
+                return;
+
+            //CreateObject(inv)
+            BuildingInvenSlot selectSlot = (BuildingInvenSlot)invenSlots.Find(_ => _.isSelect == true) == null
+    ? (BuildingInvenSlot)invenSlots[0] : invenSlots.Find(_ => _.isSelect == true) as BuildingInvenSlot;
+
+            if (selectSlot.bo.sdBuildItem.index != 0)
+                CreateObject(selectSlot);
+
+
+        });
+
+        KeyDictRegist(KeyCode.E, () =>
+        {
+            // E키를 누를시 현재 마우스 위치에 있는 건물을 회수
+
+            RaycastHit hit;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000f, 1 << LayerMask.NameToLayer("Obj"), QueryTriggerInteraction.Collide))
+            {
+                var buildingObj = hit.transform.parent.gameObject.GetComponent<BuildItem>();
+
+                var pool = PoolManager.Instance.GetPool<BuildItem>();
+
+                // slots가 slotBase 형태라서 sd데이터를 찾을 수없어서 cast를 해줌
+                var slots = inven.slots.Cast<BuildingInvenSlot>();
+                var slot = slots.Where(_ => _.bo.sdBuildItem.index == buildingObj.boItem.sdBuildItem.index).SingleOrDefault() == null ?
+                slots.Where(_ => _.bo.sdBuildItem.index == 0).FirstOrDefault() : slots.Where(_ => _.bo.sdBuildItem.index == buildingObj.boItem.sdBuildItem.index).SingleOrDefault();
+
+                // 인벤에 해당 아이템과 같은 아이템이 없을경우
+                // 없을때는 인벤에 비어있는 슬롯중 가장 앞에 있는 슬롯을 찾아 아이템을 넣어줌
+                pool.PoolReturn(buildingObj);
+                slot.AddItem(buildingObj.boItem, 1);
+            }
+
+        });
+
     }
 
 }

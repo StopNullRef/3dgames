@@ -1,6 +1,8 @@
+using Project.DB;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +16,7 @@ public class BuildingInvenSlot : SlotBase
     public Image selectImage;
 
     [SerializeField]
-    public SDBuildItem sd;
+    public BoBuildItem bo;
 
     /// <summary>
     /// SelectImage를 해당 slot의 불타입변수를 이용해
@@ -38,9 +40,9 @@ public class BuildingInvenSlot : SlotBase
     /// </summary>
     /// <param name="sd">추가할 StaticData</param>
     /// <param name="count">추가할 아이템의 갯수</param>
-    public void AddItem(SDBuildItem sd, int count)
+    public void AddItem(BoBuildItem bo, int count)
     {
-        this.sd = sd;
+        this.bo = bo;
         this.count += count;
         SlotRefresh();
     }
@@ -51,7 +53,8 @@ public class BuildingInvenSlot : SlotBase
     /// </summary>
     public void SlotRefresh()
     {
-        if (sd == null || sd.index == 0)
+        // if (bo.sdBuildItem == null || bo.sdBuildItem.index == 0)
+        if (bo.sdBuildItem.index == 0)
         {
             // 여기에 들어왔다는것은 해당 슬롯에 아이템이 비어있다는것
             // 해당 슬롯에 비어있는 슬롯 이미지를 넣어줌
@@ -62,7 +65,7 @@ public class BuildingInvenSlot : SlotBase
         {
             // 여기에 들어왔다는 것은 해등 슬롯에 아이템이 존재 한다는 것
             // 해당 아이템 정도에 맞게 슬롯이미지를 넣어줌
-            itemIconImage.sprite = Resources.Load<Sprite>(sd.resourcePath[0]);
+            itemIconImage.sprite = Resources.Load<Sprite>(bo.sdBuildItem.resourcePath[0]);
             itemCountText.text = count.ToString();
         }
     }
@@ -92,7 +95,7 @@ public class BuildingInvenSlot : SlotBase
     /// <returns></returns>
     public bool IsHaveItem()
     {
-        if (sd != null && count != 0)
+        if (bo.sdBuildItem != null && count != 0)
             return true;
 
         return false;
@@ -106,11 +109,8 @@ public class BuildingInvenSlot : SlotBase
             base.Count = value;
             if (Count == 0)
             {
-                //TODO 08/01
-                //
-                //
-                //여기 아이템 갯수 0개일때 슬롯 비워주는거 다시 설정하기
-                //this.sd.index = 0;
+
+                this.bo = new BoBuildItem(GameManager.SD.sdBuildItems.Where(_=>_.index ==0).FirstOrDefault());
                 SlotRefresh();
             }
         }

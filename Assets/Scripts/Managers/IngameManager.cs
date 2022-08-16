@@ -29,6 +29,7 @@ public class IngameManager : Singleton<IngameManager>
 
     public BuidingSystemController BuildingSystem { get => buildingSystem; }
 
+    public bool isBuilding = false;
 
     protected override void Awake()
     {

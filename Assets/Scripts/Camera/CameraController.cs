@@ -36,11 +36,14 @@ public class CameraController : MonoBehaviour
     /// </summary>
     public Dictionary<KeyCode, Action> keyDict = new Dictionary<KeyCode, Action>();
 
+    IngameManager ingame;
+
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         KeyInitialize();
-
+        ingame = IngameManager.Instance;
+        //ingame.BuildingSystem.Initialize();
     }
 
     // Update is called once per frame
@@ -67,6 +70,8 @@ public class CameraController : MonoBehaviour
                 break;
         }
     }
+
+
     //캐릭터 기준 카메라 위치
     //    x y   z
     //pos  0   5   7.5
@@ -119,6 +124,7 @@ public class CameraController : MonoBehaviour
             ingame.BuildingSystem.Initialize();
             uiManager.GetUI<BuildingInvenButton>().InvenMove();
             ingame.BuildingSystem.inven = uiManager.GetUI<BuildingInven>();
+            ingame.isBuilding = true;
             //uiManager.GetUI<BuildingInven>().BuildPoolRigist();
         });
 
@@ -126,7 +132,7 @@ public class CameraController : MonoBehaviour
         KeyDictRegist(KeyCode.Escape, () =>
         {
             if (cameraState == CameraState.Build)
-                IngameManager.Instance.canCusorChange = true;
+                ingame.canCusorChange = true;
             else
                 return;
 
@@ -138,7 +144,8 @@ public class CameraController : MonoBehaviour
             if (button.isOpening == false)
                 button.isOpening = true;
             button.SetOriginPos();
-            IngameManager.Instance.BuildingSystem.RemoveObject();
+            ingame.BuildingSystem.RemoveObject();
+            ingame.isBuilding = false;
         });
 
     }
@@ -162,4 +169,5 @@ public class CameraController : MonoBehaviour
         //transform.rotation = Quaternion.Euler(60, 180, 0);
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(60, 180, 0), _cameraMoveSpeed * Time.deltaTime);
     }
+
 }
